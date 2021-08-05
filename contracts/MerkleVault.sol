@@ -67,7 +67,7 @@ contract MerkleVault is IMerkleVault, Pausable, ReentrancyGuard, Ownable {
     ) external override whenNotPaused nonReentrant {
         require(!fundsClaimed[msg.sender][merkleVersion], "Funds have been claimed");
 
-        bytes32 node = keccak256(abi.encodePacked(_index, msg.sender, _amount, _token));
+        bytes32 node = keccak256(abi.encodePacked(_index, _token, msg.sender, _amount));
         require(
             MerkleProof.verify(_merkleProof, merkleVersionMetadata[merkleVersion].root, node),
             "Merkle verification failed"
@@ -91,9 +91,20 @@ contract MerkleVault is IMerkleVault, Pausable, ReentrancyGuard, Ownable {
         emit ETHReceived(msg.value);
     }
 
+    /// @notice Externally verify whether a node is part of merkle tree before doing claim
+    function isPartOfMerkleTree(
+        uint256 _index,
+        address _token,
+        address _account,
+        uint256 _amount,
+        bytes32[] calldata _merkleProof
+    ) external view returns (bool) {
+        bytes32 node = keccak256(abi.encodePacked(_index, _token, _account, _amount));
+        return MerkleProof.verify(_merkleProof, merkleVersionMetadata[merkleVersion].root, node);
+    }
+
     // Update the merkle tree version whilst validating the new metadata
     function _updateMerkleTree(MerkleTreeMetadata memory _metadata) internal {
-        require(_metadata.root.length == 32, "Invalid root");
         require(bytes(_metadata.dataIPFSHash).length == 46, "Invalid IPFS hash");
 
         merkleVersion += 1;
