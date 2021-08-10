@@ -22,5 +22,12 @@ module.exports = {
       url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`]
     },
+  },
+  gasReporter: {
+    currency: 'USD',
+    enabled: (process.env.REPORT_GAS) ? true : false,
+    gasPrice: 75,
+    showTimeSpent: true,
+    showMethodSig: true,
   }
 };
