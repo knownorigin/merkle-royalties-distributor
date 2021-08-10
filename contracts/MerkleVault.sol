@@ -86,7 +86,8 @@ contract MerkleVault is IMerkleVault, Pausable, ReentrancyGuard, Ownable {
         emit TokensClaimed(_token, _amount);
     }
 
-    // todo - ensure that this method will not consume more than 27k gas as this is what is forwarded from OS
+    /// NOTE: This receive will fail for payments that only forward the minimum 21k GAS
+    /// However, the gas use of this method is only circa 22,111 so not much more is needed
     receive() external payable {
         emit ETHReceived(msg.value);
     }
