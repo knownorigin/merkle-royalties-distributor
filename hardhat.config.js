@@ -3,6 +3,7 @@ require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-truffle5");
 require('solidity-coverage');
 require('hardhat-gas-reporter');
+require('./scripts/opensea/opensea')
 
 const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID
 const PRIVATE_KEY = process.env.PRIVATE_KEY
