@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const axios = require('axios');
 
 function getOpenSeaUrl(nftAddress, startDate, endDate, limit = 500) {
@@ -27,5 +28,5 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       return event.payment_token.symbol === tokenSymbol;
     });
 
-    console.log('filteredEvents', filteredEvents)
+    console.log('filteredEvents', filteredEvents);
   })

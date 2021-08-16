@@ -8,7 +8,7 @@ async function main() {
   const dataIPFSHash = prompt('Tree data IPFS hash? ')
 
   console.log('\nSupplied merkle root: ', merkleRoot)
-  console.log('IPFS data hash: ', dataIPFSHash)
+  console.log('\nIPFS data hash: ', dataIPFSHash)
 
   prompt(`\nIf happy, hit enter...`)
 

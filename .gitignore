@@ -10,3 +10,4 @@ coverage.json
 coverage
 .idea/
 .env
+os-vault.iml
