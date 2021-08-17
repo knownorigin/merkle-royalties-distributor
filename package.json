@@ -24,5 +24,8 @@
     "hardhat-gas-reporter": "^1.0.4",
     "prompt-sync": "^4.2.0",
     "solidity-coverage": "^0.7.16"
+  },
+  "dependencies": {
+    "graphql-request": "^3.5.0"
   }
 }
