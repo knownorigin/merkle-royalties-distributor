@@ -1,5 +1,8 @@
 const _ = require('lodash');
 const axios = require('axios');
+const { request, gql } = require('graphql-request')
+const { parseNodesAndBuildMerkleTree } = require('../../utils/parse-nodes')
+const _ethers = require("ethers");
 
 // todo
 // my understanding is that we have to work this out
@@ -47,7 +50,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
 
     const transactionHashes = _.map(filteredEvents, 'transaction.transaction_hash');
 
-    const mappedData = _.map(filteredEvents, ({asset, total_price, created_date}, index) => {
+    const mappedData = _.map(filteredEvents, ({asset, total_price, created_date}) => {
       const modulo = ethers.BigNumber.from('10000');
       const totalPriceBn = ethers.BigNumber.from(total_price)
       const vaultCommissionScaledBn = ethers.BigNumber.from((parseFloat(vaultCommission) * 100).toString());
@@ -73,8 +76,99 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     const totalCommission = _.sum(_.map(_.map(mappedData, 'total_commission'), _.toNumber));
     const totalPlatformCommission = _.sum(_.map(_.map(mappedData, 'platform_commission'), _.toNumber));
 
-    console.log('mappedData[0]', mappedData[0]);
-    console.log('totalAmount', totalAmount);
-    console.log('totalCommission', totalCommission);
-    console.log('totalPlatformCommission', totalPlatformCommission);
+    const allMerkleTreeNodes = []
+    for(let i = 0; i < mappedData.length; i++) {
+      const koLookupQuery = gql`
+          query getTokens($id: String!) {
+              tokens(where:{id: $id}) {
+                  id
+                  version
+                  edition {
+                      id
+                      version
+                      artistAccount
+                      optionalCommissionAccount
+                      optionalCommissionRate
+                  }
+              }
+          }
+      `
+
+      const mData = mappedData[i]
+
+      const reqRes = await request(
+        'https://api.thegraph.com/subgraphs/name/knownorigin/known-origin',
+        koLookupQuery,
+        {
+          id: mData.token_id
+        }
+      )
+
+      if (!reqRes || !reqRes.tokens || !reqRes.tokens[0]) continue;
+
+      const {id, edition, version} = reqRes.tokens[0]
+
+      // this must be compliant with utils/parse-nodes.js
+      // i.e. expected object structure
+      // {
+      //   token: 'eth-address',
+      //   address: 'eth-address',
+      //     amount: `integer as string`
+      // }
+      if (version === "2") {
+        if (edition.optionalCommissionAccount) {
+          allMerkleTreeNodes.push({
+            token: '0x0000000000000000000000000000000000000000', // todo - hardcode for now and assume an ETH tree is being built
+            address: edition.artistAccount,
+            amount: mData.amountDueToCreators // todo - amount is incorrect
+          })
+
+          allMerkleTreeNodes.push({
+            token: '0x0000000000000000000000000000000000000000', // todo - hardcode for now and assume an ETH tree is being built
+            address: edition.optionalCommissionAccount,
+            amount: mData.amountDueToCreators // todo - amount is incorrect
+          })
+        }
+      } else {
+        allMerkleTreeNodes.push({
+          token: '0x0000000000000000000000000000000000000000', // todo - hardcode for now and assume an ETH tree is being built
+          address: edition.artistAccount,
+          amount: mData.amountDueToCreators
+        })
+      }
+    }
+
+    // some accounts may be in the list twice so reduce them into one node
+    const allMerkleTreeNodesReducedObject = allMerkleTreeNodes.reduce((memo, {
+      token,
+      address,
+      amount
+    }) => {
+      const amountBN = ethers.BigNumber.from(amount);
+
+      if (memo[address]) {
+        memo[address] = {
+          token,
+          address,
+          amount: memo[address].amount.add(amountBN),
+        }
+      } else {
+        memo[address] = {
+          token,
+          address,
+          amount: amountBN,
+        }
+      }
+
+      return memo;
+    }, {});
+
+    const allMerkleTreeNodesReduced = _.map(Object.keys(allMerkleTreeNodesReducedObject), key => ({
+      ...allMerkleTreeNodesReducedObject[key],
+      amount: allMerkleTreeNodesReducedObject[key].amount.toString()
+    }))
+
+    const merkleTree = parseNodesAndBuildMerkleTree(allMerkleTreeNodesReduced)
+
+    console.log('merkle tree built', merkleTree)
   })
