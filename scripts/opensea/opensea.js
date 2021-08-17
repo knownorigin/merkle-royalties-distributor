@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const axios = require('axios');
 
-function getOpenSeaUrl(nftAddress, startDate, endDate, limit = 500) {
+function getOpenSeaUrl(nftAddress, startDate, endDate, limit = 300) {
   return `https://api.opensea.io/api/v1/events?asset_contract_address=${nftAddress}&event_type=successful&only_opensea=true&occurred_after=${startDate}&occurred_before=${endDate}&limit=${limit}`
 }
 
@@ -17,6 +17,11 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       endDate,
       tokenSymbol
     } = taskArgs
+
+    // TODO get data per day with 300 limit
+    // TODO gather data and dump to file
+    // TODO churn data and determine allocations + sense checks on output
+    // TODO churn data and build trie 
 
     const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY
 
