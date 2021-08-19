@@ -208,6 +208,9 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     const merkleTree = parseNodesAndBuildMerkleTree(allMerkleTreeNodesReduced)
 
     console.log('merkle tree built', merkleTree)
+
+    // total in tree should be the sum of totalPlatformCommission + totalAmountDueToCreators
     console.log('total ETH in merkle tree', ethers.BigNumber.from(merkleTree.tokenTotal).toString())
+    console.log('totalPlatformCommission', totalPlatformCommission.toString())
     console.log('totalAmountDueToCreators', totalAmountDueToCreators.toString())
   })
