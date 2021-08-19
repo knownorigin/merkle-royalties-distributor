@@ -90,6 +90,10 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       return memo.add(platform_commission_bn);
     }, ethers.BigNumber.from('0'));
 
+    const totalAmountDueToCreators = mappedData.reduce((memo, {amount_due_to_creators_bn}) => {
+      return memo.add(amount_due_to_creators_bn);
+    }, ethers.BigNumber.from('0'));
+
     console.log(`Looking up platform data for ${mappedData.length} events`)
     const allMerkleTreeNodes = []
     for(let i = 0; i < mappedData.length; i++) {
@@ -122,7 +126,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
 
       if (!reqRes || !reqRes.tokens || !reqRes.tokens[0]) continue;
 
-      const {id, edition, version} = reqRes.tokens[0]
+      const { edition, version } = reqRes.tokens[0]
 
       // this must be compliant with utils/parse-nodes.js
       // i.e. expected object structure
@@ -148,13 +152,13 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
             address: edition.optionalCommissionAccount,
             amount: optionalCommissionAmount.toString()
           })
+        } else {
+          allMerkleTreeNodes.push({
+            token,
+            address: edition.artistAccount,
+            amount: mData.amount_due_to_creators
+          })
         }
-      } else {
-        allMerkleTreeNodes.push({
-          token,
-          address: edition.artistAccount,
-          amount: mData.amount_due_to_creators
-        })
       }
     }
 
@@ -166,6 +170,8 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     })
 
     console.log('Generating merkle tree...')
+
+    console.log('allMerkleTreeNodes', allMerkleTreeNodes.length)
 
     // some accounts may be in the list twice so reduce them into one node
     const allMerkleTreeNodesReducedObject = allMerkleTreeNodes.reduce((memo, {
@@ -197,8 +203,11 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       amount: allMerkleTreeNodesReducedObject[key].amount.toString()
     }))
 
+    console.log('allMerkleTreeNodesReduced', allMerkleTreeNodesReduced.length)
+
     const merkleTree = parseNodesAndBuildMerkleTree(allMerkleTreeNodesReduced)
 
     console.log('merkle tree built', merkleTree)
     console.log('total ETH in merkle tree', ethers.BigNumber.from(merkleTree.tokenTotal).toString())
+    console.log('totalAmountDueToCreators', totalAmountDueToCreators.toString())
   })

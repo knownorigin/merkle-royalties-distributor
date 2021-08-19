@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "graphql": "^15.5.1",
-    "graphql-request": "^3.5.0"
+    "graphql-request": "^3.5.0",
+    "moment": "^2.29.1"
   }
 }
