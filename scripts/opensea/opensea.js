@@ -2,7 +2,7 @@ const _ = require('lodash');
 const axios = require('axios');
 const { request, gql } = require('graphql-request')
 const { parseNodesAndBuildMerkleTree } = require('../../utils/parse-nodes')
-const _ethers = require("ethers");
+const moment = require("moment");
 
 // todo
 // my understanding is that we have to work this out
@@ -45,12 +45,40 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY
 
     console.log('Hitting up OpenSea for some data')
-    const {data} = await axios.get(getOpenSeaUrl(nftAddress, startDate, endDate), {
-      'X-API-KEY': OPENSEA_API_KEY
-    })
+
+    const oneDayInSeconds = 86400;
+    const endDateUnix = parseInt(endDate)
+    let currentUnix = moment.unix(parseInt(startDate)).startOf('day').unix()
+    let events = []
+    let numOfRequests = 0
+    while(currentUnix <= endDateUnix) {
+      console.log(`OpenSea request ${numOfRequests+1}`)
+
+      const {data} = await axios.get(getOpenSeaUrl(nftAddress, currentUnix, currentUnix + oneDayInSeconds), {
+        'X-API-KEY': OPENSEA_API_KEY
+      })
+
+      events = _.concat(events, data.asset_events)
+
+      // add one day
+      currentUnix += oneDayInSeconds;
+
+      numOfRequests += 1
+    }
+
+    if (currentUnix > endDateUnix && endDateUnix - (currentUnix - oneDayInSeconds) > 0) {
+      numOfRequests += 1;
+      console.log(`OpenSea request ${numOfRequests+1}`)
+
+      const {data} = await axios.get(getOpenSeaUrl(nftAddress, currentUnix - oneDayInSeconds, endDateUnix), {
+        'X-API-KEY': OPENSEA_API_KEY
+      })
+
+      events = _.concat(events, data.asset_events)
+    }
 
     console.log('Filtering data for specific payment token [ETH]')
-    const filteredEvents = _.filter(data.asset_events, (event) => {
+    const filteredEvents = _.filter(events, (event) => {
       // ensure we filter for the correct payment token and ensure we get back a token ID
       return (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH') && event.asset && event.asset.token_id;
     });
