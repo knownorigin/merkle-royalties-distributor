@@ -1,0 +1,1 @@
+yarn open-sea-events --nft-address '0xfbeef911dc5821886e1dda71586d90ed28174b7d' --start-date '1626091058' --end-date '1628769458' --vault-commission 2.5 --platform-commission 2.5 --platform-account '0xD677AEd0965AC9B54e709F01A99cEcA205aebC4B'

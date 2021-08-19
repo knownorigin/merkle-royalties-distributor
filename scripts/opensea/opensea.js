@@ -20,10 +20,10 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
   .addParam('nftAddress', 'ETH contract address for the NFT')
   .addParam('startDate', 'Start Date')
   .addParam('endDate', 'End Date')
-  // todo - enable later
-  //.addParam('tokenSymbol', "Events will be filtered for payments by this symbol i.e. 'ETH")
+  //.addParam('tokenSymbol', "Events will be filtered for payments by this symbol i.e. 'ETH") // todo - enable later
   .addParam('vaultCommission', "Commission sent to vault from an OpenSea sale")
   .addParam('platformCommission', "Of the commission sent to the vault, the percentage that goes to platform")
+  .addParam('platformAccount', "Platform account address that will receive a split of the vault")
   .setAction(async taskArgs => {
     const {
       nftAddress, // todo - have a KO shell script with this hard coded
@@ -31,7 +31,8 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       endDate,
       // tokenSymbol,
       vaultCommission,
-      platformCommission
+      platformCommission,
+      platformAccount
     } = taskArgs
 
     console.log(`Starting task...`)
@@ -158,11 +159,9 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     }
 
     // add platform as a node
-    // todo - get platform address as a param
-    const platformAddress = '0xD677AEd0965AC9B54e709F01A99cEcA205aebC4B'
     allMerkleTreeNodes.push({
       token,
-      address: platformAddress,
+      address: platformAccount,
       amount: totalPlatformCommission.toString()
     })
 
