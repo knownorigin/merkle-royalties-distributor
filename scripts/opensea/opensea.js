@@ -1,8 +1,10 @@
 const _ = require('lodash');
 const axios = require('axios');
-const { request, gql } = require('graphql-request')
-const { parseNodesAndBuildMerkleTree } = require('../../utils/parse-nodes')
+const {request, gql} = require('graphql-request');
+const {parseNodesAndBuildMerkleTree} = require('../../utils/parse-nodes');
 const moment = require("moment");
+
+const fs = require('fs');
 
 // todo
 // my understanding is that we have to work this out
@@ -13,18 +15,18 @@ function getFullCommissionTakenFromOpenSeaSale(vaultCommission) {
 
 // todo - chunk range into days
 function getOpenSeaUrl(nftAddress, startDate, endDate, limit = 300) {
-  return `https://api.opensea.io/api/v1/events?asset_contract_address=${nftAddress}&event_type=successful&only_opensea=true&occurred_after=${startDate}&occurred_before=${endDate}&limit=${limit}`
+  return `https://api.opensea.io/api/v1/events?asset_contract_address=${nftAddress}&event_type=successful&only_opensea=true&occurred_after=${startDate}&occurred_before=${endDate}&limit=${limit}`;
 }
 
 task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
-  .addParam('nftAddress', 'ETH contract address for the NFT')
-  .addParam('startDate', 'Start Date')
-  .addParam('endDate', 'End Date')
+.addParam('nftAddress', 'ETH contract address for the NFT')
+.addParam('startDate', 'Start Date')
+.addParam('endDate', 'End Date')
   //.addParam('tokenSymbol', "Events will be filtered for payments by this symbol i.e. 'ETH") // todo - enable later
-  .addParam('vaultCommission', "Commission sent to vault from an OpenSea sale")
-  .addParam('platformCommission', "Of the commission sent to the vault, the percentage that goes to platform")
-  .addParam('platformAccount', "Platform account address that will receive a split of the vault")
-  .setAction(async taskArgs => {
+.addParam('vaultCommission', "Commission sent to vault from an OpenSea sale")
+.addParam('platformCommission', "Of the commission sent to the vault, the percentage that goes to platform")
+.addParam('platformAccount', "Platform account address that will receive a split of the vault")
+.setAction(async taskArgs => {
     const {
       nftAddress, // todo - have a KO shell script with this hard coded
       startDate,
@@ -32,73 +34,73 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       // tokenSymbol,
       vaultCommission,
       platformCommission,
-      platformAccount
-    } = taskArgs
+      platformAccount,
+    } = taskArgs;
 
-    console.log(`Starting task...`)
+    console.log(`Starting task...`);
 
     // TODO get data per day with 300 limit
     // TODO gather data and dump to file
     // TODO churn data and determine allocations + sense checks on output
     // TODO churn data and build trie
 
-    const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY
+    const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 
-    console.log('Hitting up OpenSea for some data')
+    console.log('Hitting up OpenSea for some data');
 
     const oneDayInSeconds = 86400;
-    const endDateUnix = parseInt(endDate)
-    let currentUnix = moment.unix(parseInt(startDate)).startOf('day').unix()
-    let events = []
-    let numOfRequests = 0
-    while(currentUnix <= endDateUnix) {
-      console.log(`OpenSea request ${numOfRequests+1}`)
+    const endDateUnix = parseInt(endDate);
+    let currentUnix = moment.unix(parseInt(startDate)).startOf('day').unix();
+    let events = [];
+    let numOfRequests = 0;
+    while (currentUnix <= endDateUnix) {
+      console.log(`OpenSea request ${numOfRequests + 1}`);
 
       const {data} = await axios.get(getOpenSeaUrl(nftAddress, currentUnix, currentUnix + oneDayInSeconds), {
         'X-API-KEY': OPENSEA_API_KEY
-      })
+      });
 
-      events = _.concat(events, data.asset_events)
+      events = _.concat(events, data.asset_events);
 
       // add one day
       currentUnix += oneDayInSeconds;
 
-      numOfRequests += 1
+      numOfRequests += 1;
     }
 
     if (currentUnix > endDateUnix && endDateUnix - (currentUnix - oneDayInSeconds) > 0) {
       numOfRequests += 1;
-      console.log(`OpenSea request ${numOfRequests+1}`)
+      console.log(`OpenSea request ${numOfRequests + 1}`);
 
       const {data} = await axios.get(getOpenSeaUrl(nftAddress, currentUnix - oneDayInSeconds, endDateUnix), {
         'X-API-KEY': OPENSEA_API_KEY
-      })
+      });
 
-      events = _.concat(events, data.asset_events)
+      events = _.concat(events, data.asset_events);
     }
 
-    console.log('Filtering data for specific payment token [ETH]')
+    console.log('Filtering data for specific payment token [ETH]');
     const filteredEvents = _.filter(events, (event) => {
       // ensure we filter for the correct payment token and ensure we get back a token ID
       return (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH') && event.asset && event.asset.token_id;
     });
 
     // for ETH based payments, we encode the token as the zero address in the tree
-    const token = '0x0000000000000000000000000000000000000000'
+    const token = '0x0000000000000000000000000000000000000000';
 
     const transactionHashes = _.map(filteredEvents, 'transaction.transaction_hash');
 
-    console.log(`Mapping sale data for ${filteredEvents.length} events`)
+    console.log(`Mapping sale data for ${filteredEvents.length} events`);
     const modulo = ethers.BigNumber.from('100000');
 
     const mappedData = _.map(filteredEvents, ({asset, total_price, created_date}) => {
-      const totalPriceBn = ethers.BigNumber.from(total_price)
+      const totalPriceBn = ethers.BigNumber.from(total_price);
       const vaultCommissionScaledBn = ethers.BigNumber.from((parseFloat(vaultCommission) * 1000).toString());
       const platformCommissionScaledBn = ethers.BigNumber.from((parseFloat(platformCommission) * 1000).toString());
-      const vault_commission = totalPriceBn.div(modulo).mul(vaultCommissionScaledBn)
-      const platform_commission = vault_commission.div(modulo).mul(platformCommissionScaledBn)
+      const vault_commission = totalPriceBn.div(modulo).mul(vaultCommissionScaledBn);
+      const platform_commission = vault_commission.div(modulo).mul(platformCommissionScaledBn);
 
-      const amount_due_to_creators = vault_commission.sub(platform_commission)
+      const amount_due_to_creators = vault_commission.sub(platform_commission);
 
       return {
         total_price,
@@ -111,7 +113,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
         amount_due_to_creators_bn: amount_due_to_creators,
         created_date,
         token_id: asset.token_id
-      }
+      };
     });
 
     const totalPlatformCommission = mappedData.reduce((memo, {platform_commission_bn}) => {
@@ -122,10 +124,10 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       return memo.add(amount_due_to_creators_bn);
     }, ethers.BigNumber.from('0'));
 
-    console.log(`Looking up platform data for ${mappedData.length} events`)
-    const allMerkleTreeNodes = []
-    for(let i = 0; i < mappedData.length; i++) {
-      console.log(`${mappedData.length - (i+1)} lookups left`)
+    console.log(`Looking up platform data for ${mappedData.length} events`);
+    const allMerkleTreeNodes = [];
+    for (let i = 0; i < mappedData.length; i++) {
+      console.log(`${mappedData.length - (i + 1)} lookups left`);
       const koLookupQuery = gql`
           query getTokens($id: String!) {
               tokens(where:{id: $id}) {
@@ -140,9 +142,9 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
                   }
               }
           }
-      `
+      `;
 
-      const mData = mappedData[i]
+      const mData = mappedData[i];
 
       const reqRes = await request(
         'https://api.thegraph.com/subgraphs/name/knownorigin/known-origin',
@@ -150,11 +152,11 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
         {
           id: mData.token_id
         }
-      )
+      );
 
       if (!reqRes || !reqRes.tokens || !reqRes.tokens[0]) continue;
 
-      const { edition, version } = reqRes.tokens[0]
+      const {edition, version} = reqRes.tokens[0];
 
       // this must be compliant with utils/parse-nodes.js
       // i.e. expected object structure
@@ -166,26 +168,26 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       if (version === "2") {
         if (edition.optionalCommissionAccount) {
           const optionalCommissionRate = ethers.BigNumber.from(edition.optionalCommissionRate.toString());
-          const singleUnitOfValue = mData.amount_due_to_creators_bn.div(ethers.BigNumber.from('85'))
-          const optionalCommissionAmount = singleUnitOfValue.mul(optionalCommissionRate)
+          const singleUnitOfValue = mData.amount_due_to_creators_bn.div(ethers.BigNumber.from('85'));
+          const optionalCommissionAmount = singleUnitOfValue.mul(optionalCommissionRate);
 
           allMerkleTreeNodes.push({
             token,
             address: edition.artistAccount,
             amount: mData.amount_due_to_creators_bn.sub(optionalCommissionAmount).toString()
-          })
+          });
 
           allMerkleTreeNodes.push({
             token,
             address: edition.optionalCommissionAccount,
             amount: optionalCommissionAmount.toString()
-          })
+          });
         } else {
           allMerkleTreeNodes.push({
             token,
             address: edition.artistAccount,
             amount: mData.amount_due_to_creators
-          })
+          });
         }
       }
     }
@@ -195,11 +197,11 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       token,
       address: platformAccount,
       amount: totalPlatformCommission.toString()
-    })
+    });
 
-    console.log('Generating merkle tree...')
+    console.log('Generating merkle tree...');
 
-    console.log('allMerkleTreeNodes', allMerkleTreeNodes.length)
+    console.log('allMerkleTreeNodes', allMerkleTreeNodes.length);
 
     // some accounts may be in the list twice so reduce them into one node
     const allMerkleTreeNodesReducedObject = allMerkleTreeNodes.reduce((memo, {
@@ -214,13 +216,13 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
           token,
           address,
           amount: memo[address].amount.add(amountBN),
-        }
+        };
       } else {
         memo[address] = {
           token,
           address,
           amount: amountBN,
-        }
+        };
       }
 
       return memo;
@@ -229,16 +231,20 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     const allMerkleTreeNodesReduced = _.map(Object.keys(allMerkleTreeNodesReducedObject), key => ({
       ...allMerkleTreeNodesReducedObject[key],
       amount: allMerkleTreeNodesReducedObject[key].amount.toString()
-    }))
+    }));
 
-    console.log('allMerkleTreeNodesReduced', allMerkleTreeNodesReduced.length)
+    console.log('allMerkleTreeNodesReduced', allMerkleTreeNodesReduced.length);
 
-    const merkleTree = parseNodesAndBuildMerkleTree(allMerkleTreeNodesReduced)
+    const merkleTree = parseNodesAndBuildMerkleTree(allMerkleTreeNodesReduced);
 
-    console.log('merkle tree built', merkleTree)
+    console.log('merkle tree built', merkleTree);
+
+    // Generate data
+    fs.writeFileSync(`./data/merkletree-${1}.json`, JSON.stringify(merkleTree, null, 2));
 
     // total in tree should be the sum of totalPlatformCommission + totalAmountDueToCreators
-    console.log('total ETH in merkle tree', ethers.BigNumber.from(merkleTree.tokenTotal).toString())
-    console.log('totalPlatformCommission', totalPlatformCommission.toString())
-    console.log('totalAmountDueToCreators', totalAmountDueToCreators.toString())
-  })
+    console.log('total ETH in merkle tree', ethers.BigNumber.from(merkleTree.tokenTotal).toString());
+    console.log('totalPlatformCommission', totalPlatformCommission.toString());
+    console.log('totalAmountDueToCreators', totalAmountDueToCreators.toString());
+  }
+);
