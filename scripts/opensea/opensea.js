@@ -26,6 +26,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
 .addParam('vaultCommission', "Commission sent to vault from an OpenSea sale")
 .addParam('platformCommission', "Of the commission sent to the vault, the percentage that goes to platform")
 .addParam('platformAccount', "Platform account address that will receive a split of the vault")
+.addParam('merkleTreeVersion', 'The version of the file to pin')
 .setAction(async taskArgs => {
     const {
       nftAddress, // todo - have a KO shell script with this hard coded
@@ -35,6 +36,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       vaultCommission,
       platformCommission,
       platformAccount,
+      merkleTreeVersion,
     } = taskArgs;
 
     console.log(`Starting task...`);
@@ -240,7 +242,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     console.log('merkle tree built', merkleTree);
 
     // Generate data
-    fs.writeFileSync(`./data/merkletree-${1}.json`, JSON.stringify(merkleTree, null, 2));
+    fs.writeFileSync(`./data/merkletree-${merkleTreeVersion}.json`, JSON.stringify(merkleTree, null, 2));
 
     // total in tree should be the sum of totalPlatformCommission + totalAmountDueToCreators
     console.log('total ETH in merkle tree', ethers.BigNumber.from(merkleTree.tokenTotal).toString());
