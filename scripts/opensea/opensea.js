@@ -201,6 +201,29 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       amount: totalPlatformCommission.toString()
     });
 
+    // FIXME FAKE TEST DATA
+    let fakeTestData = [
+      "0x0f48669b1681d41357eac232f516b77d0c10f0f1", // j
+      "0x7dec37c03ea5ca2c47ad2509be6abaf8c63cdb39", // d
+      "0xd9c575163c3fc0948490b02cce19acf8d9ec8427", // l
+      "0x70482d3bd44fbef402a0cee6d9bea516d12be128", // b
+      "0x0b6fa76a74fb44a1f6e62ac952cd6b1905c1feb8", // e
+      "0x401cbf2194d35d078c0bcdae4bea42275483ab5f", // a
+      "0xd514f2065fde42a02c73c913735e8e5a2fcc085e", // c
+      "0x681a7040477be268a4b9a02c5e8263fd9febf0a9", // Liam
+      "0x4D20F13e70320e9C11328277F2Cc0dC235A74F27", // acc 1
+      "0xbFcF4088772bd56d45d2daBA4e86D410d6076775", // darkness
+      "0xcce99f546d60541E85D006FCB9F5510A1d100Ac9", // bhm
+    ];
+
+    fakeTestData.forEach((testAddress) => {
+      allMerkleTreeNodes.push({
+        token,
+        address: testAddress,
+        amount: '100000000000000000',
+      });
+    });
+
     console.log('Generating merkle tree...');
 
     console.log('allMerkleTreeNodes', allMerkleTreeNodes.length);
