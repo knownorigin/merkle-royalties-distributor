@@ -214,13 +214,15 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       "0x4D20F13e70320e9C11328277F2Cc0dC235A74F27", // acc 1
       "0xbFcF4088772bd56d45d2daBA4e86D410d6076775", // darkness
       "0xcce99f546d60541E85D006FCB9F5510A1d100Ac9", // bhm
+      "0xA9d8b169783100639Bb137eC09f7277DC7948760", // vinc 1
+      "0x4a429c0CF1e23C55C4d5249a3d485Cd5cB5683D0", // vinc 2
     ];
 
-    fakeTestData.forEach((testAddress) => {
+    fakeTestData.forEach((testAddress, index) => {
       allMerkleTreeNodes.push({
         token,
         address: testAddress,
-        amount: '100000000000000000',
+        amount: index % 2 === 0 ? '100000000000000000' : '246800000000000000',
       });
     });
 
