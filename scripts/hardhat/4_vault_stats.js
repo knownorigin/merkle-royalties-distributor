@@ -7,7 +7,6 @@ async function main() {
   console.log('Deploying vault with the account:', await deployer.getAddress());
 
   const merkleVaultAddress = prompt('MerkleVault address? ');
-
   console.log('\nSupplied merkleVaultAddress: ', merkleVaultAddress);
 
   prompt(`\nIf happy, hit enter...`);
@@ -21,9 +20,14 @@ async function main() {
   // Wait for deployment
   await merkleVaultDeployment.deployed();
 
-  await merkleVaultDeployment.unpauseClaiming();
+  const version = await merkleVaultDeployment.merkleVersion();
+  console.log('version', version.toString());
 
-  console.log('MerkleVault unpaused');
+  const pausedState = await merkleVaultDeployment.paused();
+  console.log('paused state', pausedState);
+
+  const rootAndHash = await merkleVaultDeployment.merkleVersionMetadata(version);
+  console.log('root and hash', rootAndHash);
 }
 
 main()

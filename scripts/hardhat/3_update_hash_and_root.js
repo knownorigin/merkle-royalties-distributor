@@ -7,6 +7,8 @@ async function main() {
   console.log('Deploying vault with the account:', await deployer.getAddress());
 
   const merkleVaultAddress = prompt('MerkleVault address? ');
+  const ipfsHash = prompt('IPFS hash? ');
+  const merkleRoot = prompt('Merkle root? ');
 
   console.log('\nSupplied merkleVaultAddress: ', merkleVaultAddress);
 
@@ -21,9 +23,24 @@ async function main() {
   // Wait for deployment
   await merkleVaultDeployment.deployed();
 
-  await merkleVaultDeployment.unpauseClaiming();
+  const pausedState = await merkleVaultDeployment.paused();
+  console.log('paused state', pausedState);
 
-  console.log('MerkleVault unpaused');
+  if (!pausedState) {
+    console.log('pausing contract');
+    await merkleVaultDeployment.pauseClaiming();
+  }
+
+  await merkleVaultDeployment.updateMerkleTree({
+    root: merkleRoot,
+    dataIPFSHash: ipfsHash
+  });
+  console.log('updated root and hash');
+
+  await merkleVaultDeployment.unpauseClaiming();
+  console.log('unpausing contract');
+
+  console.log('MerkleVault root and ipfs updated');
 }
 
 main()
