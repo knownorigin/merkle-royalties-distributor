@@ -1,1 +1,1 @@
-yarn open-sea-events --nft-address '0xfbeef911dc5821886e1dda71586d90ed28174b7d' --start-date '1626094093' --end-date '1626439693' --vault-commission 2.5 --platform-commission 2.5 --platform-account '0xD677AEd0965AC9B54e709F01A99cEcA205aebC4B'
+yarn open-sea-events --nft-address '0xfbeef911dc5821886e1dda71586d90ed28174b7d' --start-date '1626094093' --end-date '1626439693' --vault-commission 2.5 --platform-commission 2.5 --platform-account '0xD677AEd0965AC9B54e709F01A99cEcA205aebC4B' --merkle-tree-version "2"
