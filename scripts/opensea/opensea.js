@@ -41,10 +41,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
 
     console.log(`Starting task...`);
 
-    // TODO get data per day with 300 limit
-    // TODO gather data and dump to file
     // TODO churn data and determine allocations + sense checks on output
-    // TODO churn data and build trie
 
     const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 
@@ -89,8 +86,6 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
 
     // for ETH based payments, we encode the token as the zero address in the tree
     const token = '0x0000000000000000000000000000000000000000';
-
-    const transactionHashes = _.map(filteredEvents, 'transaction.transaction_hash');
 
     console.log(`Mapping sale data for ${filteredEvents.length} events`);
     const modulo = ethers.BigNumber.from('100000');
@@ -201,30 +196,35 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       amount: totalPlatformCommission.toString()
     });
 
-    // FIXME FAKE TEST DATA
-    let fakeTestData = [
-      "0x0f48669b1681d41357eac232f516b77d0c10f0f1", // j
-      "0x7dec37c03ea5ca2c47ad2509be6abaf8c63cdb39", // d
-      "0xd9c575163c3fc0948490b02cce19acf8d9ec8427", // l
-      "0x70482d3bd44fbef402a0cee6d9bea516d12be128", // b
-      "0x0b6fa76a74fb44a1f6e62ac952cd6b1905c1feb8", // e
-      "0x401cbf2194d35d078c0bcdae4bea42275483ab5f", // a
-      "0xd514f2065fde42a02c73c913735e8e5a2fcc085e", // c
-      "0x681a7040477be268a4b9a02c5e8263fd9febf0a9", // Liam
-      "0x4D20F13e70320e9C11328277F2Cc0dC235A74F27", // acc 1
-      "0xbFcF4088772bd56d45d2daBA4e86D410d6076775", // darkness
-      "0xcce99f546d60541E85D006FCB9F5510A1d100Ac9", // bhm
-      "0xA9d8b169783100639Bb137eC09f7277DC7948760", // vinc 1
-      "0x4a429c0CF1e23C55C4d5249a3d485Cd5cB5683D0", // vinc 2
-    ];
+    const totalETHInMerkleTreeNodes = allMerkleTreeNodes.reduce((memo, {amount}) => {
+      const amountBn = ethers.BigNumber.from(amount)
+      return memo.add(amountBn);
+    }, ethers.BigNumber.from('0'));
 
-    fakeTestData.forEach((testAddress, index) => {
-      allMerkleTreeNodes.push({
-        token,
-        address: testAddress,
-        amount: index % 2 === 0 ? '100000000000000000' : '246800000000000000',
-      });
-    });
+    // FIXME FAKE TEST DATA
+    // let fakeTestData = [
+    //   "0x0f48669b1681d41357eac232f516b77d0c10f0f1", // j
+    //   "0x7dec37c03ea5ca2c47ad2509be6abaf8c63cdb39", // d
+    //   "0xd9c575163c3fc0948490b02cce19acf8d9ec8427", // l
+    //   "0x70482d3bd44fbef402a0cee6d9bea516d12be128", // b
+    //   "0x0b6fa76a74fb44a1f6e62ac952cd6b1905c1feb8", // e
+    //   "0x401cbf2194d35d078c0bcdae4bea42275483ab5f", // a
+    //   "0xd514f2065fde42a02c73c913735e8e5a2fcc085e", // c
+    //   "0x681a7040477be268a4b9a02c5e8263fd9febf0a9", // Liam
+    //   "0x4D20F13e70320e9C11328277F2Cc0dC235A74F27", // acc 1
+    //   "0xbFcF4088772bd56d45d2daBA4e86D410d6076775", // darkness
+    //   "0xcce99f546d60541E85D006FCB9F5510A1d100Ac9", // bhm
+    //   "0xA9d8b169783100639Bb137eC09f7277DC7948760", // vinc 1
+    //   "0x4a429c0CF1e23C55C4d5249a3d485Cd5cB5683D0", // vinc 2
+    // ];
+    //
+    // fakeTestData.forEach((testAddress, index) => {
+    //   allMerkleTreeNodes.push({
+    //     token,
+    //     address: testAddress,
+    //     amount: index % 2 === 0 ? '100000000000000000' : '246800000000000000',
+    //   });
+    // });
 
     console.log('Generating merkle tree...');
 
@@ -266,12 +266,21 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
 
     console.log('merkle tree built', merkleTree);
 
+    console.log('totalETHInMerkleTreeNodes', ethers.utils.formatEther(totalETHInMerkleTreeNodes).toString())
+    console.log('totalPlatformCommission+totalAmountDueToCreators', ethers.utils.formatEther(totalPlatformCommission.add(totalAmountDueToCreators)).toString())
+    console.log('total ETH in merkle tree', ethers.utils.formatEther(ethers.BigNumber.from(merkleTree.tokenTotal)).toString());
+
+    if (
+      !totalETHInMerkleTreeNodes.eq(totalPlatformCommission.add(totalAmountDueToCreators)) // ensure nodes that go into tree match up to ETH from opensea events
+      || !totalETHInMerkleTreeNodes.eq(ethers.BigNumber.from(merkleTree.tokenTotal)) // ensure nodes that go into tree match up to total ETH calculated from tree generation
+    ) {
+      throw new Error('Balances dont match up');
+    }
+
     // Generate data
     fs.writeFileSync(`./data/merkletree-${merkleTreeVersion}.json`, JSON.stringify(merkleTree, null, 2));
 
-    // total in tree should be the sum of totalPlatformCommission + totalAmountDueToCreators
-    console.log('total ETH in merkle tree', ethers.BigNumber.from(merkleTree.tokenTotal).toString());
-    console.log('totalPlatformCommission', totalPlatformCommission.toString());
-    console.log('totalAmountDueToCreators', totalAmountDueToCreators.toString());
+    console.log('totalPlatformCommission', ethers.utils.formatEther(totalPlatformCommission).toString());
+    console.log('totalAmountDueToCreators', ethers.utils.formatEther(totalAmountDueToCreators).toString());
   }
 );
