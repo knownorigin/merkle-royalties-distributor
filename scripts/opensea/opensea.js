@@ -6,20 +6,20 @@ const moment = require("moment");
 
 const fs = require('fs');
 
-// todo
+const oneDayInSeconds = 86400;
+
 // my understanding is that we have to work this out
 // open sea always take 2.5 commission so any further commission taken goes to the vault to be further split
 function getFullCommissionTakenFromOpenSeaSale(vaultCommission) {
   return vaultCommission + 2.5;
 }
 
-// todo - chunk range into days
 function getOpenSeaUrl(nftAddress, startDate, endDate, limit = 300) {
   return `https://api.opensea.io/api/v1/events?asset_contract_address=${nftAddress}&event_type=successful&only_opensea=true&occurred_after=${startDate}&occurred_before=${endDate}&limit=${limit}`;
 }
 
 task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
-.addParam('nftAddress', 'ETH contract address for the NFT')
+  //.addParam('nftAddress', 'ETH contract address for the NFT')
 .addParam('startDate', 'Start Date')
 .addParam('endDate', 'End Date')
   //.addParam('tokenSymbol', "Events will be filtered for payments by this symbol i.e. 'ETH") // todo - enable later
@@ -29,7 +29,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
 .addParam('merkleTreeVersion', 'The version of the file to pin')
 .setAction(async taskArgs => {
     const {
-      nftAddress, // todo - have a KO shell script with this hard coded
+      // nftAddress,
       startDate,
       endDate,
       // tokenSymbol,
@@ -41,42 +41,49 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
 
     console.log(`Starting task...`);
 
+    const KODAV2ContractAddress = '0xfbeef911dc5821886e1dda71586d90ed28174b7d'
+    const KODAV3ContractAddress = '0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b'
+
     // TODO churn data and determine allocations + sense checks on output
 
     const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 
-    console.log('Hitting up OpenSea for some data');
-
-    const oneDayInSeconds = 86400;
-    const endDateUnix = parseInt(endDate);
-    let currentUnix = moment.unix(parseInt(startDate)).startOf('day').unix();
     let events = [];
-    let numOfRequests = 0;
-    while (currentUnix <= endDateUnix) {
-      console.log(`OpenSea request ${numOfRequests + 1}`);
 
-      const {data} = await axios.get(getOpenSeaUrl(nftAddress, currentUnix, currentUnix + oneDayInSeconds), {
-        'X-API-KEY': OPENSEA_API_KEY
-      });
+    async function getEventsForContract(contractAddress) {
+      console.log('\nGetting events for contract address', contractAddress)
 
-      events = _.concat(events, data.asset_events);
+      const endDateUnix = parseInt(endDate);
+      let currentUnix = parseInt(startDate);
+      let numOfRequests = 0;
+      while (currentUnix + oneDayInSeconds <= endDateUnix) {
+        numOfRequests += 1;
+        console.log(`OpenSea request ${numOfRequests}`);
 
-      // add one day
-      currentUnix += oneDayInSeconds;
+        const {data} = await axios.get(getOpenSeaUrl(contractAddress, currentUnix, currentUnix + oneDayInSeconds - 1), {
+          'X-API-KEY': OPENSEA_API_KEY
+        });
 
-      numOfRequests += 1;
+        events = _.concat(events, data.asset_events);
+
+        // add one day
+        currentUnix += oneDayInSeconds;
+      }
+
+      if ((currentUnix + oneDayInSeconds) > endDateUnix && endDateUnix - currentUnix > 0) {
+        numOfRequests += 1;
+        console.log(`OpenSea request ${numOfRequests}`);
+
+        const {data} = await axios.get(getOpenSeaUrl(contractAddress, currentUnix, endDateUnix), {
+          'X-API-KEY': OPENSEA_API_KEY
+        });
+
+        events = _.concat(events, data.asset_events);
+      }
     }
 
-    if (currentUnix > endDateUnix && endDateUnix - (currentUnix - oneDayInSeconds) > 0) {
-      numOfRequests += 1;
-      console.log(`OpenSea request ${numOfRequests + 1}`);
-
-      const {data} = await axios.get(getOpenSeaUrl(nftAddress, currentUnix - oneDayInSeconds, endDateUnix), {
-        'X-API-KEY': OPENSEA_API_KEY
-      });
-
-      events = _.concat(events, data.asset_events);
-    }
+    await getEventsForContract(KODAV2ContractAddress);
+    await getEventsForContract(KODAV3ContractAddress);
 
     console.log('Filtering data for specific payment token [ETH]');
     const filteredEvents = _.filter(events, (event) => {
@@ -136,6 +143,10 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
                       artistAccount
                       optionalCommissionAccount
                       optionalCommissionRate
+                      collective {
+                          recipients
+                          splits
+                      }
                   }
               }
           }
@@ -179,6 +190,27 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
             address: edition.optionalCommissionAccount,
             amount: optionalCommissionAmount.toString()
           });
+        } else {
+          allMerkleTreeNodes.push({
+            token,
+            address: edition.artistAccount,
+            amount: mData.amount_due_to_creators
+          });
+        }
+      } else {
+        if (edition.collective) {
+          const {recipients, splits} = edition.collective
+
+          const v3Modulo = ethers.BigNumber.from('10000000')
+          const singleUnitOfValue = ethers.BigNumber.from(mData.amount_due_to_creators).div(v3Modulo)
+
+          for(let i = 0; i < recipients.length; i++) {
+            allMerkleTreeNodes.push({
+              token,
+              address: recipients[i],
+              amount: singleUnitOfValue.mul(ethers.BigNumber.from(splits[i]))
+            });
+          }
         } else {
           allMerkleTreeNodes.push({
             token,
