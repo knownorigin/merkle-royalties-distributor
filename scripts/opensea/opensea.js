@@ -27,6 +27,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
 .addParam('platformCommission', "Of the commission sent to the vault, the percentage that goes to platform")
 .addParam('platformAccount', "Platform account address that will receive a split of the vault")
 .addParam('merkleTreeVersion', 'The version of the file to pin')
+.addParam('ethPayoutAmount', 'Amount of ETH that was last paid by OpenSea')
 .setAction(async taskArgs => {
     const {
       // nftAddress,
@@ -37,9 +38,12 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
       platformCommission,
       platformAccount,
       merkleTreeVersion,
+      ethPayoutAmount
     } = taskArgs;
 
     console.log(`Starting task...`);
+
+    const expectedETH = ethers.utils.parseEther(ethPayoutAmount)
 
     const KODAV2ContractAddress = '0xfbeef911dc5821886e1dda71586d90ed28174b7d'
     const KODAV3ContractAddress = '0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b'
@@ -83,12 +87,20 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     }
 
     await getEventsForContract(KODAV2ContractAddress);
-    await getEventsForContract(KODAV3ContractAddress);
+    //await getEventsForContract(KODAV3ContractAddress);
 
     console.log('Filtering data for specific payment token [ETH]');
     const filteredEvents = _.filter(events, (event) => {
       // ensure we filter for the correct payment token and ensure we get back a token ID
-      return (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH') && event.asset && event.asset.token_id;
+      return (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH')
+        && event.asset // ensure an asset
+        && event.asset.token_id // ensure asset has a token ID
+        && event.dev_fee_payment_event // ensure there is a dev payment event
+        && event.dev_fee_payment_event.event_type // ensure that we can query event type
+        && event.dev_fee_payment_event.event_type === "payout" /// ensure type is payoyt
+        && event.dev_fee_payment_event.transaction // ensure we can query tx
+        && event.dev_fee_payment_event.transaction.transaction_hash // ensure there is a tx hash
+        && !event.is_private // ensure we are not looking at private events
     });
 
     // for ETH based payments, we encode the token as the zero address in the tree
@@ -97,7 +109,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     console.log(`Mapping sale data for ${filteredEvents.length} events`);
     const modulo = ethers.BigNumber.from('100000');
 
-    const mappedData = _.map(filteredEvents, ({asset, total_price, created_date}) => {
+    let mappedData = _.map(filteredEvents, ({asset, total_price, created_date, transaction}) => {
       const totalPriceBn = ethers.BigNumber.from(total_price);
       const vaultCommissionScaledBn = ethers.BigNumber.from((parseFloat(vaultCommission) * 1000).toString());
       const platformCommissionScaledBn = ethers.BigNumber.from((parseFloat(platformCommission) * 1000).toString());
@@ -116,9 +128,14 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
         amount_due_to_creators: amount_due_to_creators.toString(),
         amount_due_to_creators_bn: amount_due_to_creators,
         created_date,
-        token_id: asset.token_id
+        token_id: asset.token_id,
+        timestamp: transaction.timestamp,
+        txId: transaction.id
       };
     });
+
+    mappedData = _.sortBy(mappedData, ["timestamp"])
+    mappedData = _.uniqBy(mappedData, 'txId');
 
     const totalPlatformCommission = mappedData.reduce((memo, {platform_commission_bn}) => {
       return memo.add(platform_commission_bn);
@@ -127,6 +144,36 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     const totalAmountDueToCreators = mappedData.reduce((memo, {amount_due_to_creators_bn}) => {
       return memo.add(amount_due_to_creators_bn);
     }, ethers.BigNumber.from('0'));
+
+    let counter = totalAmountDueToCreators.add(totalPlatformCommission)
+    let platformCommissionCounter = totalPlatformCommission
+    if (totalAmountDueToCreators.add(totalPlatformCommission).gt(expectedETH)) {
+      console.log('More ETH in events than expected! Filtering out events and dumping to file')
+
+      counter = ethers.BigNumber.from('0')
+      platformCommissionCounter = ethers.BigNumber.from('0')
+      let filteredEvents = []
+      for(let i = 0; i < mappedData.length; i++) {
+        const mData = mappedData[i]
+        const commissionDueForToken = mData.platform_commission_bn.add(mData.amount_due_to_creators_bn)
+
+        if (counter.add(commissionDueForToken).lte(expectedETH)) {
+          counter = counter.add(commissionDueForToken)
+          platformCommissionCounter = platformCommissionCounter.add(mData.platform_commission_bn)
+          filteredEvents.push(mData)
+        }
+      }
+
+      console.log(`Expected amount [${expectedETH.toString()}] vs total in events [${totalAmountDueToCreators.add(totalPlatformCommission).toString()}] vs new amount [${counter.toString()}]`)
+      console.log('num of events not included', mappedData.length - filteredEvents.length)
+      console.log('first timestamp', filteredEvents[0].timestamp)
+      console.log('last timestamp', filteredEvents[filteredEvents.length-1].timestamp)
+
+      const diff = _.difference(mappedData, filteredEvents)
+      fs.writeFileSync(`./data/removed-${merkleTreeVersion}.json`, JSON.stringify(diff, null, 2));
+
+      mappedData = filteredEvents
+    }
 
     console.log(`Looking up platform data for ${mappedData.length} events`);
     const allMerkleTreeNodes = [];
@@ -225,7 +272,7 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     allMerkleTreeNodes.push({
       token,
       address: platformAccount,
-      amount: totalPlatformCommission.toString()
+      amount: platformCommissionCounter.toString()
     });
 
     const totalETHInMerkleTreeNodes = allMerkleTreeNodes.reduce((memo, {amount}) => {
@@ -299,11 +346,10 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     console.log('merkle tree built', merkleTree);
 
     console.log('totalETHInMerkleTreeNodes', ethers.utils.formatEther(totalETHInMerkleTreeNodes).toString())
-    console.log('totalPlatformCommission+totalAmountDueToCreators', ethers.utils.formatEther(totalPlatformCommission.add(totalAmountDueToCreators)).toString())
     console.log('total ETH in merkle tree', ethers.utils.formatEther(ethers.BigNumber.from(merkleTree.tokenTotal)).toString());
 
     if (
-      !totalETHInMerkleTreeNodes.eq(totalPlatformCommission.add(totalAmountDueToCreators)) // ensure nodes that go into tree match up to ETH from opensea events
+      !totalETHInMerkleTreeNodes.eq(counter) // ensure nodes that go into tree match up to ETH from opensea events
       || !totalETHInMerkleTreeNodes.eq(ethers.BigNumber.from(merkleTree.tokenTotal)) // ensure nodes that go into tree match up to total ETH calculated from tree generation
     ) {
       throw new Error('Balances dont match up');
@@ -312,7 +358,8 @@ task("open-sea-events", "Gets OpenSea sale events between 2 dates for an NFT")
     // Generate data
     fs.writeFileSync(`./data/merkletree-${merkleTreeVersion}.json`, JSON.stringify(merkleTree, null, 2));
 
-    console.log('totalPlatformCommission', ethers.utils.formatEther(totalPlatformCommission).toString());
-    console.log('totalAmountDueToCreators', ethers.utils.formatEther(totalAmountDueToCreators).toString());
+    // console.log('totalPlatformCommission+totalAmountDueToCreators', ethers.utils.formatEther(totalPlatformCommission.add(totalAmountDueToCreators)).toString())
+    // console.log('totalPlatformCommission', ethers.utils.formatEther(totalPlatformCommission).toString());
+    // console.log('totalAmountDueToCreators', ethers.utils.formatEther(totalAmountDueToCreators).toString());
   }
 );
