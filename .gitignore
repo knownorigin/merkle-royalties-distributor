@@ -5,7 +5,6 @@ yarn-error.log
 .DS_Store
 
 cache
-artifacts
 coverage.json
 coverage
 .idea/

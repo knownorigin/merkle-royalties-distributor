@@ -3,12 +3,13 @@ require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-truffle5");
 require('solidity-coverage');
 require('hardhat-gas-reporter');
+require('@nomiclabs/hardhat-etherscan');
 require('./scripts/opensea/opensea');
 require('./scripts/opensea/pin-merkle-tree-to-ipfs');
 require('./scripts/opensea/reconcile');
 
 const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const PRIVATE_KEY = process.env.OS_VAULT_PRIVATE_KEY;
 
 module.exports = {
   solidity: {
@@ -20,11 +21,16 @@ module.exports = {
       }
     }
   },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_KEY
+  },
   networks: {
-    rinkeby: {
-      url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
-      accounts: [`0x${PRIVATE_KEY}`]
-    },
+    mainnet: {
+      url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: [`${PRIVATE_KEY}`],
+      maxFeePerGas: 245000000000,
+      maxPriorityFeePerGas: 1900000000
+    }
   },
   gasReporter: {
     currency: 'USD',
