@@ -21,7 +21,9 @@ contract('MerkleVault test', function ([_, random, beneficiary, beneficiary2, be
         this.initialBeneficiaryNode
       ])
 
-      this.vault = await MerkleVault.new({
+      this.vault = await MerkleVault.new()
+
+      await this.vault.updateMerkleTree({
         root: this.merkleTree.merkleRoot,
         dataIPFSHash: randomIPFSHash
       })
@@ -109,7 +111,9 @@ contract('MerkleVault test', function ([_, random, beneficiary, beneficiary2, be
         this.initialBeneficiaryNode
       ])
 
-      this.vault = await MerkleVault.new({
+      this.vault = await MerkleVault.new()
+
+      await this.vault.updateMerkleTree({
         root: this.merkleTree.merkleRoot,
         dataIPFSHash: randomIPFSHash
       })
@@ -186,7 +190,9 @@ contract('MerkleVault test', function ([_, random, beneficiary, beneficiary2, be
 
       this.merkleTree = parseNodesAndBuildMerkleTree(merkleTreeNodes)
 
-      this.vault = await MerkleVault.new({
+      this.vault = await MerkleVault.new()
+
+      await this.vault.updateMerkleTree({
         root: this.merkleTree.merkleRoot,
         dataIPFSHash: randomIPFSHash
       })

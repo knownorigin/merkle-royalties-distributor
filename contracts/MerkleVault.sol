@@ -28,14 +28,10 @@ contract MerkleVault is IMerkleVault, Pausable, ReentrancyGuard, Ownable {
     /// @notice Beneficiary -> Merkle version -> Whether the beneficiary has claimed their funds
     mapping(address => mapping(uint256 => bool)) public fundsClaimed;
 
-    /// @notice Sets up the contract with the first merkle tree metadata and leaves the contract paused
-    /// @param _firstMerleTreeMetadata Root and IPFS hash of the first merkle tree used for the contract
-    constructor(MerkleTreeMetadata memory _firstMerleTreeMetadata) {
+    /// @notice Sets up the contract in a paused state
+    constructor() {
         // Starting paused means claiming can be enabled by calling `unpauseClaiming()` later
         _pause();
-
-        // Setup the first tree
-        _updateMerkleTree(_firstMerleTreeMetadata);
     }
 
     /// @notice Owner can pause claiming to permit updating the merkle tree to a new version i.e. stop front-running
