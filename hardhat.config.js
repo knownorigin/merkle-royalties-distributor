@@ -7,6 +7,7 @@ require('@nomiclabs/hardhat-etherscan');
 require('./scripts/opensea/opensea');
 require('./scripts/opensea/pin-merkle-tree-to-ipfs');
 require('./scripts/opensea/reconcile');
+require('./scripts/opensea/generate_test_tree');
 
 const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
 const PRIVATE_KEY = process.env.OS_VAULT_PRIVATE_KEY;
@@ -27,6 +28,12 @@ module.exports = {
   networks: {
     mainnet: {
       url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: [`${PRIVATE_KEY}`],
+      maxFeePerGas: 245000000000,
+      maxPriorityFeePerGas: 1900000000
+    },
+    rinkeby: {
+      url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: [`${PRIVATE_KEY}`],
       maxFeePerGas: 245000000000,
       maxPriorityFeePerGas: 1900000000
