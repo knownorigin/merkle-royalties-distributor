@@ -6,6 +6,10 @@ Main contract code `./contracts/MerkleVault.sol`
 
 Based on token distribution merkle magic from `Uniswap` and `OpenZeppelin`
 
+## The flow
+
+![merkle-distributor-flow](./merkle-distributor.png)
+
 ## Generating your tree from OpenSea events
 
 Have a look at:
