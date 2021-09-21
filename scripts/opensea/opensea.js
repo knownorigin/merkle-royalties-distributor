@@ -84,7 +84,6 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
       let cumulativeEventTotalInEth = totalAmountDueToCreators.add(totalPlatformCommission);
       let platformCommissionCounter = totalPlatformCommission;
 
-      // TODO is there any logic reasons we can apply to why this may be the case?
       // if the total to creators and platform exceeds the expected amount - try work out why
       const doesNotMatchExpectedEth = totalAmountDueToCreators.add(totalPlatformCommission).gt(expectedETH);
       if (doesNotMatchExpectedEth) {
