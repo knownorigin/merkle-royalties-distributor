@@ -61,25 +61,22 @@ contract MerkleVault is IMerkleVault, Pausable, ReentrancyGuard, Ownable {
         uint256 _amount,
         bytes32[] calldata _merkleProof
     ) external override whenNotPaused nonReentrant {
-        require(!fundsClaimed[msg.sender][merkleVersion], "Funds have been claimed");
+        _claim(_index, _token, _amount, payable(msg.sender), _merkleProof);
+    }
 
-        bytes32 node = keccak256(abi.encodePacked(_index, _token, msg.sender, _amount));
-        require(
-            MerkleProof.verify(_merkleProof, merkleVersionMetadata[merkleVersion].root, node),
-            "Merkle verification failed"
-        );
-
-        fundsClaimed[msg.sender][merkleVersion] = true;
-
-        // If token is zero - this is a claim for ETH. Otherwise its an ERC20 claim
-        if (_token == address(0)) {
-            (bool ethTransferSuccessful,) = msg.sender.call{value: _amount}("");
-            require(ethTransferSuccessful, "ETH transfer failed");
-        } else {
-            IERC20(_token).transfer(msg.sender, _amount);
-        }
-
-        emit TokensClaimed(_token, _amount);
+    /// @notice Allows anyone to trigger a claim on behalf of a beneficiary
+    /// @param _index Nonce assigned to beneficiary
+    /// @param _token Contract address or zero address if claiming ETH
+    /// @param _amount Amount being claimed - must be exact
+    /// @param _merkleProof Proof for the claim
+    function claimFor(
+        uint256 _index,
+        address _token,
+        uint256 _amount,
+        address payable _claimant,
+        bytes32[] calldata _merkleProof
+    ) external whenNotPaused nonReentrant {
+        _claim(_index, _token, _amount, _claimant, _merkleProof);
     }
 
     /// NOTE: This receive will fail for payments that only forward the minimum 21k GAS
@@ -108,5 +105,34 @@ contract MerkleVault is IMerkleVault, Pausable, ReentrancyGuard, Ownable {
         merkleVersionMetadata[merkleVersion] = _metadata;
 
         emit MerkleTreeUpdated(merkleVersion);
+    }
+
+    // process a claim
+    function _claim(
+        uint256 _index,
+        address _token,
+        uint256 _amount,
+        address payable _claimant,
+        bytes32[] calldata _merkleProof
+    ) internal {
+        require(!fundsClaimed[_claimant][merkleVersion], "Funds have been claimed");
+
+        bytes32 node = keccak256(abi.encodePacked(_index, _token, _claimant, _amount));
+        require(
+            MerkleProof.verify(_merkleProof, merkleVersionMetadata[merkleVersion].root, node),
+            "Merkle verification failed"
+        );
+
+        fundsClaimed[_claimant][merkleVersion] = true;
+
+        // If token is zero - this is a claim for ETH. Otherwise its an ERC20 claim
+        if (_token == address(0)) {
+            (bool ethTransferSuccessful,) = _claimant.call{value: _amount}("");
+            require(ethTransferSuccessful, "ETH transfer failed");
+        } else {
+            IERC20(_token).transfer(_claimant, _amount);
+        }
+
+        emit TokensClaimed(_token, _amount);
     }
 }

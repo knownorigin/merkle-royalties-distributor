@@ -388,4 +388,65 @@ contract('MerkleVault test', function ([_, random, beneficiary, beneficiary2, be
       )
     })
   })
+
+  describe('Claiming on behalf of someone', () => {
+    beforeEach(async () => {
+      // zero address means a claim to ETH
+      this.initialBeneficiaryNode = {token: ZERO_ADDRESS, address: beneficiary, amount: ether('0.2').toString()}
+
+      this.merkleTree = parseNodesAndBuildMerkleTree([
+        this.initialBeneficiaryNode
+      ])
+
+      this.vault = await MerkleVault.new()
+
+      await this.vault.updateMerkleTree({
+        root: this.merkleTree.merkleRoot,
+        dataIPFSHash: randomIPFSHash
+      })
+
+      // send ETH to the vault
+      const [ownerSigner] = await ethers.getSigners();
+      await ownerSigner.sendTransaction({
+        to: this.vault.address,
+        value: ethers.utils.parseEther('0.2')
+      });
+    })
+
+    it('Send ETH on behalf of someone else', async () => {
+      // first unpause contract
+      await this.vault.unpauseClaiming()
+
+      // claim the ETH once
+      const beneficiaryBalTracker = await balance.tracker(beneficiary)
+
+      const gasPrice = new BN(web3.utils.toWei('1', 'gwei').toString());
+      const tx = await this.vault.claimFor(
+        this.merkleTree.claims[beneficiary].index,
+        ZERO_ADDRESS,
+        this.initialBeneficiaryNode.amount,
+        beneficiary,
+        this.merkleTree.claims[beneficiary].proof,
+        { gasPrice }
+      )
+
+      await expectEvent(tx.receipt, 'TokensClaimed', {
+        token: ZERO_ADDRESS,
+        amount: this.initialBeneficiaryNode.amount
+      })
+
+      expect(await beneficiaryBalTracker.delta()).to.be.bignumber.equal(ether('0.2'))
+
+      await expectRevert(
+        this.vault.claim(
+          this.merkleTree.claims[beneficiary].index,
+          ZERO_ADDRESS,
+          this.initialBeneficiaryNode.amount,
+          this.merkleTree.claims[beneficiary].proof,
+          {from: beneficiary}
+        ),
+        "Funds have been claimed"
+      )
+    })
+  })
 })
