@@ -41,18 +41,12 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
       /// Gather data on NFT contracts
       /// ---------------------------------
 
-      const KODAV2ContractAddress = '0xfbeef911dc5821886e1dda71586d90ed28174b7d';
-      const KODAV3ContractAddress = '0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b';
-
       // TODO add more sense checks/validation
 
       // TODO it looks like the same data is returned for both contacts?
 
       // Get all events from V2 & V3 sales
-      let events = [
-        ...await getEventsForContract(merkleTreeVersion, startDate, endDate, KODAV2ContractAddress),
-        ...await getEventsForContract(merkleTreeVersion, startDate, endDate, KODAV3ContractAddress)
-      ];
+      let events = await getEventsForContract(merkleTreeVersion, startDate, endDate);
 
       // for ETH based payments, we encode the token as the zero address in the tree
       const token = '0x0000000000000000000000000000000000000000';
@@ -163,7 +157,10 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
         const reqRes = await getTokenData(mData.token_id);
 
         // check the token is found
-        if (!reqRes || !reqRes.tokens || !reqRes.tokens[0]) continue;
+        if (!reqRes || !reqRes.tokens || !reqRes.tokens[0]) {
+          console.log('skippppppppped****', mData.token_id)
+          continue;
+        }
 
         const {edition, version} = reqRes.tokens[0];
 
@@ -292,7 +289,7 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
       
       Total ETH in merkel tree nodes: [${utils.formatEther(totalETHInMerkleTreeNodes).toString()}]
       
-      Total ETH in merge tree: [${utils.formatEther(BigNumber.from(merkleTree.tokenTotal)).toString()}]
+      Total ETH in merkel tree: [${utils.formatEther(BigNumber.from(merkleTree.tokenTotal)).toString()}]
      
       Total reduced merkle tree nodes: [${allMerkleTreeNodesReduced.length}]
     `);

@@ -7,8 +7,8 @@ const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 
 const oneDayInSeconds = 86400;
 
-function getOpenSeaUrl(nftAddress, startDate, endDate, limit = 300) {
-  return `https://api.opensea.io/api/v1/events?asset_contract_address=${nftAddress}&event_type=successful&only_opensea=true&occurred_after=${startDate}&occurred_before=${endDate}&limit=${limit}`;
+function getOpenSeaUrl(startDate, endDate, limit = 300) {
+  return `https://api.opensea.io/api/v1/events?collection_slug=known-origin&event_type=successful&only_opensea=true&occurred_after=${startDate}&occurred_before=${endDate}&limit=${limit}`;
 }
 
 // my understanding is that we have to work this out
@@ -17,8 +17,8 @@ function getFullCommissionTakenFromOpenSeaSale(vaultCommission) {
   return vaultCommission + 2.5;
 }
 
-async function getEventsForContract(version, startDate, endDate, contractAddress) {
-  console.log('\nGetting events for contract address', contractAddress);
+async function getEventsForContract(version, startDate, endDate) {
+  console.log('\nGetting events for all KO contracts');
 
   let events = [];
 
@@ -31,7 +31,7 @@ async function getEventsForContract(version, startDate, endDate, contractAddress
 
     console.log(`query OpenSea data from [${moment.unix(currentUnix).format()}] to [${moment.unix(endDateTime).format()}] - request [${numOfRequests}]`);
 
-    const {data} = await axios.get(getOpenSeaUrl(contractAddress, currentUnix, endDateTime), {
+    const {data} = await axios.get(getOpenSeaUrl(currentUnix, endDateTime), {
       'X-API-KEY': OPENSEA_API_KEY
     });
 
@@ -45,37 +45,51 @@ async function getEventsForContract(version, startDate, endDate, contractAddress
     numOfRequests += 1;
     console.log(`query OpenSea data from [${moment.unix(currentUnix).format()}] to [${moment.unix(endDateUnix).format()}] - request [${numOfRequests}]`);
 
-    const {data} = await axios.get(getOpenSeaUrl(contractAddress, currentUnix, endDateUnix), {
+    const {data} = await axios.get(getOpenSeaUrl(currentUnix, endDateUnix), {
       'X-API-KEY': OPENSEA_API_KEY
     });
     events = _.concat(events, data.asset_events);
   }
 
-  console.log(`\nFound a total of [${events.length}] events for contract address`, contractAddress);
+  console.log(`\nFound a total of [${events.length}] events`);
 
   if (events.length > 0) {
-    const fileName = `${moment.unix(startDate).format('YYYY-DD-MM_HH-mm-ss')}_${moment.unix(endDate).format('YYYY-DD-MM_HH-mm-ss')}_${contractAddress}.json`;
+    const fileName = `${moment.unix(startDate).format('YYYY-DD-MM_HH-mm-ss')}_${moment.unix(endDate).format('YYYY-DD-MM_HH-mm-ss')}_v2_v3.json`;
     fs.writeFileSync(`./data/events/${fileName}`, JSON.stringify(events, null, 2));
   }
 
   return events;
 }
 
-const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events) => {
+const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, fromTokenId = 4500) => {
   console.log('Filtering data for specific payment token [ETH]');
 
   // ensure we filter for the correct payment token and ensure we get back a token ID
+  const removedEvents = [];
+
   const filteredEvents = _.filter(events, (event) => {
-    return (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH')
+    const isIncluded = (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH')
       && event.asset // ensure an asset
       && event.asset.token_id // ensure asset has a token ID
+      && parseInt(event.asset.token_id) >= fromTokenId // ensure asset has a token ID greater than fromTokenId
       && event.dev_fee_payment_event // ensure there is a dev payment event
       && event.dev_fee_payment_event.event_type // ensure that we can query event type
       && event.dev_fee_payment_event.event_type === 'payout' /// ensure type is payoyt
       && event.dev_fee_payment_event.transaction // ensure we can query tx
       && event.dev_fee_payment_event.transaction.transaction_hash // ensure there is a tx hash
       && !event.is_private; // ensure we are not looking at private events
+
+    if (!isIncluded && event.asset && event.asset.token_id && parseInt(event.asset.token_id) <= fromTokenId) {
+      removedEvents.push(event)
+    }
+
+    return isIncluded;
   });
+
+  if (removedEvents.length > 0) {
+    const fileName = `${moment.unix(Date.now() / 1000).format('YYYY-DD-MM_HH-mm-ss')}_removed_v1_tokens.json`;
+    fs.writeFileSync(`./data/events/${fileName}`, JSON.stringify(removedEvents, null, 2));
+  }
 
   console.log(`Mapping sale data for ${filteredEvents.length} events`);
   const modulo = ethers.BigNumber.from('100000');
