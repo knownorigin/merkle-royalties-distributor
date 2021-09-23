@@ -51,6 +51,6 @@ The flow is:
 ```
 KnownOrigin:
 
-Mainnet: 0x67b72140269cfc18516cace5fcf4237706657de0
+Mainnet: 0x11B0D9AFD49Dc36D86DEa579d0D11771a4f2f54b
 Rinkeby: 0x67b72140269cfc18516cace5fcf4237706657de0
 ```
