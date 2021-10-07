@@ -29,6 +29,7 @@
   "dependencies": {
     "@nomiclabs/hardhat-etherscan": "^2.1.6",
     "@pinata/sdk": "^1.1.23",
+    "csv-parser": "^3.0.0",
     "graphql": "^15.5.1",
     "graphql-request": "^3.5.0",
     "moment": "^2.29.1"

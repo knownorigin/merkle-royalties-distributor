@@ -7,8 +7,8 @@ const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 
 const oneDayInSeconds = 86400;
 
-function getOpenSeaUrl(startDate, endDate, limit = 300) {
-  return `https://api.opensea.io/api/v1/events?collection_slug=known-origin&event_type=successful&only_opensea=true&occurred_after=${startDate}&occurred_before=${endDate}&limit=${limit}`;
+function getOpenSeaUrl(startDate, endDate, eventType, limit = 300) {
+  return `https://api.opensea.io/api/v1/events?collection_slug=known-origin&event_type=${eventType}&only_opensea=true&occurred_after=${startDate}&occurred_before=${endDate}&limit=${limit}`;
 }
 
 // my understanding is that we have to work this out
@@ -17,7 +17,7 @@ function getFullCommissionTakenFromOpenSeaSale(vaultCommission) {
   return vaultCommission + 2.5;
 }
 
-async function getEventsForContract(version, startDate, endDate) {
+async function getEventsForContract(version, startDate, endDate, eventType = 'successful') {
   console.log('\nGetting events for all KO contracts');
 
   let events = [];
@@ -31,7 +31,7 @@ async function getEventsForContract(version, startDate, endDate) {
 
     console.log(`query OpenSea data from [${moment.unix(currentUnix).format()}] to [${moment.unix(endDateTime).format()}] - request [${numOfRequests}]`);
 
-    const {data} = await axios.get(getOpenSeaUrl(currentUnix, endDateTime), {
+    const {data} = await axios.get(getOpenSeaUrl(currentUnix, endDateTime, eventType), {
       'X-API-KEY': OPENSEA_API_KEY
     });
 
@@ -45,7 +45,7 @@ async function getEventsForContract(version, startDate, endDate) {
     numOfRequests += 1;
     console.log(`query OpenSea data from [${moment.unix(currentUnix).format()}] to [${moment.unix(endDateUnix).format()}] - request [${numOfRequests}]`);
 
-    const {data} = await axios.get(getOpenSeaUrl(currentUnix, endDateUnix), {
+    const {data} = await axios.get(getOpenSeaUrl(currentUnix, endDateUnix, eventType), {
       'X-API-KEY': OPENSEA_API_KEY
     });
     events = _.concat(events, data.asset_events);
@@ -61,7 +61,7 @@ async function getEventsForContract(version, startDate, endDate) {
   return events;
 }
 
-const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, fromTokenId = 4500) => {
+const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, devFeeOverridesForTokens, fromTokenId = 4500) => {
   console.log('Filtering data for specific payment token [ETH]');
 
   // ensure we filter for the correct payment token and ensure we get back a token ID
@@ -77,7 +77,8 @@ const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, fr
       && event.dev_fee_payment_event.event_type === 'payout' /// ensure type is payoyt
       && event.dev_fee_payment_event.transaction // ensure we can query tx
       && event.dev_fee_payment_event.transaction.transaction_hash // ensure there is a tx hash
-      && !event.is_private; // ensure we are not looking at private events
+      && !event.is_private // ensure we are not looking at private events
+      && (devFeeOverridesForTokens && devFeeOverridesForTokens[event.asset.token_id.toString()])
 
     if (!isIncluded && event.asset && event.asset.token_id && parseInt(event.asset.token_id) <= fromTokenId) {
       removedEvents.push(event)
@@ -87,7 +88,8 @@ const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, fr
   });
 
   if (removedEvents.length > 0) {
-    const fileName = `${moment.unix(Date.now() / 1000).format('YYYY-DD-MM_HH-mm-ss')}_removed_v1_tokens.json`;
+    console.log('number of removed events from open sea event list', removedEvents.length)
+    const fileName = `${moment.unix(Date.now() / 1000).format('YYYY-DD-MM_HH-mm-ss')}_removed_tokens.json`;
     fs.writeFileSync(`./data/events/${fileName}`, JSON.stringify(removedEvents, null, 2));
   }
 
@@ -97,8 +99,16 @@ const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, fr
   // map the events to common format we can work with
   const mappedData = _.map(filteredEvents, ({asset, total_price, created_date, transaction}) => {
 
+    let _vaultCommission = vaultCommission
+    const token_id = asset.token_id
+
+    if (devFeeOverridesForTokens && devFeeOverridesForTokens[token_id.toString()]) {
+      _vaultCommission = parseFloat(devFeeOverridesForTokens[token_id.toString()].devFee) / 1000.00
+      console.log(_vaultCommission)
+    }
+
     const totalPriceBn = ethers.BigNumber.from(total_price);
-    const vaultCommissionScaledBn = ethers.BigNumber.from((parseFloat(vaultCommission) * 1000).toString());
+    const vaultCommissionScaledBn = ethers.BigNumber.from((parseFloat(_vaultCommission) * 1000).toString());
     const platformCommissionScaledBn = ethers.BigNumber.from((parseFloat(platformCommission) * 1000).toString());
     const vault_commission = totalPriceBn.div(modulo).mul(vaultCommissionScaledBn);
     const platform_commission = vault_commission.div(modulo).mul(platformCommissionScaledBn);
@@ -107,7 +117,7 @@ const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, fr
 
     return {
       total_price,
-      total_commission: total_price * (getFullCommissionTakenFromOpenSeaSale(parseFloat(vaultCommission)) / 100),
+      total_commission: total_price * (getFullCommissionTakenFromOpenSeaSale(parseFloat(_vaultCommission)) / 100),
       vault_commission: vault_commission.toString(),
       opensea_commission: (total_price * (getFullCommissionTakenFromOpenSeaSale(0.0) / 100)).toString(),
       platform_commission: platform_commission.toString(),
@@ -115,7 +125,7 @@ const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, fr
       amount_due_to_creators: amount_due_to_creators.toString(),
       amount_due_to_creators_bn: amount_due_to_creators,
       created_date,
-      token_id: asset.token_id,
+      token_id,
       timestamp: transaction.timestamp,
       txId: transaction.id
     };

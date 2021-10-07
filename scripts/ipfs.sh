@@ -1,1 +1,1 @@
-yarn pin-merkle-tree-to-ipfs --merkle-tree-version 2
+yarn pin-merkle-tree-to-ipfs --merkle-tree-version 1

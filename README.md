@@ -54,3 +54,5 @@ KnownOrigin:
 Mainnet: 0x6210eefb773da992d4236b1ca90d0caf6f99e646
 Rinkeby: 0x6210eeFb773dA992D4236B1CA90D0CAF6f99e646
 ```
+
+For information on the first version of the merkle tree deployed to the KnownOrigin vault, please read [here](./data/os_export/README.md)
