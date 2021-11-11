@@ -1,0 +1,918 @@
+{
+  "18104": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "22059": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "22074": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "27910": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "27942": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "28727": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "28731": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "30107": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "36404": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "37851": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "39507": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "50775": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "50791": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "52045": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "52620": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "54212": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "54818": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "56303": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "61925": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "67851": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "78156": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "78173": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "81304": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "81930": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "82906": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "85351": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "88503": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "88504": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "88516": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "90843": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "106776": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "107221": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "107802": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "108063": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "108066": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "109264": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "113729": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "113737": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "113794": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "114651": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "115035": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "115363": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "119344": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "121026": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "123933": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "142201": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "146653": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "147276": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "147926": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "149929": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "149940": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "149950": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "150551": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "164104": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "170331": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "173629": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "177551": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "180579": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "202303": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "210301": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "228185": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "233604": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "233605": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "243427": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "248307": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "257151": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "264615": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "271901": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "273278": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "281907": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "298657": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "302426": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "322201": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "340217": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "342301": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "343455": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "343465": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "345517": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "356518": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "409401": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "422601": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "443501": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "450602": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "465046": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "508101": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "513210": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "515301": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "574305": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "576685": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "579810": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "583701": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "594402": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "599429": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "599432": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "613701": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "616506": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "626803": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "650303": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "654302": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 12500
+  },
+  "656702": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "657508": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "657512": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "657518": {
+    "contract": "0xfbeef911dc5821886e1dda71586d90ed28174b7d",
+    "devFee": 2500
+  },
+  "856000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "856001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "856009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "894004": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "905003": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "944002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "944003": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "944007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "944008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "944009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "960000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "960006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "960008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "962003": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "965002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 2500
+  },
+  "967001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1024000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1030003": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1047016": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 2500
+  },
+  "1048000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1048002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1048007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1048008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1048009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1051000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1053002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1080001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1086003": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1110002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 2500
+  },
+  "1110008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1110009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1123005": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1131003": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1131004": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1131008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1131009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1217002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1217008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1217009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1220009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1255001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1299002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1299009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1300002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1300009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1301002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1394000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1394001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1422002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 2500
+  },
+  "1541001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1588008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "1746000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 2500
+  },
+  "1747001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2142024": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2172000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2228007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2228009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2230008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2241005": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2241007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2241008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2264002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2264003": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2264004": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2264005": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2264006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2264007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2270000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2285007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2285008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2285009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2286007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2286008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2290005": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2290008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2291007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2291008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2361008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2362004": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2362006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2362007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2362008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2364006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2364008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2383008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2387008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2390006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2390007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2390008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2395001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2396000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2434002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2469009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2474006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2474008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2474009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2477009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2504000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2545006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2545008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2545009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2547005": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2547007": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2547008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2547009": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2631006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2631008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2633008": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2636000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2784011": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2867000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2867001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2867002": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2867003": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "2867004": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3020000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3047000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3303001": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3384000": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3628006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3636006": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3636011": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3636012": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3636015": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3636020": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  },
+  "3636023": {
+    "contract": "0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b",
+    "devFee": 12500
+  }
+}

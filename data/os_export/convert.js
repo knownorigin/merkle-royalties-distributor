@@ -5,16 +5,16 @@ const fs = require('fs');
 (async function runScript() {
   let overrides = {}
   await new Promise((resolve) => {
-    fs.createReadStream(`./data/os_export/os_export_ko_05_10_2021.csv`)
+    fs.createReadStream(`./data/os_export/os-export-up-to-nov-02.csv`)
       .pipe(csv())
-      .on('data', ({ token_id, address, fee }) => {
+      .on('data', ({ token_id, token_address, fee }) => {
         overrides[token_id] = {
-          contract: address,
+          contract: token_address,
           devFee: parseInt(fee) * 10
         }
       })
       .on('end', () => resolve())
   })
 
-  fs.writeFileSync(`./data/os_export/05_10_2021_convert_to_json.json`, JSON.stringify(overrides, null, 2));
+  fs.writeFileSync(`./data/os_export/02_11_2021_convert_to_json`, JSON.stringify(overrides, null, 2));
 })()
