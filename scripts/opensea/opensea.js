@@ -1,6 +1,7 @@
 const moment = require('moment');
 const _ = require('lodash');
 const fs = require('fs');
+const {ethers, getDefaultProvider} = require('ethers')
 
 const {parseNodesAndBuildMerkleTree} = require('../../utils/parse-nodes');
 
@@ -153,78 +154,134 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
       for (let i = 0; i < mappedData.length; i++) {
         const mData = mappedData[i];
 
-        // console.log(`Looking up token ID [${mData.token_id}] data - ${mappedData.length - (i + 1)} lookups left`);
-        const reqRes = await getTokenData(mData.token_id);
+        // is this a v1 token? else go down a different path to process v2 and v3
+        if (parseInt(mData.token_id) <= 4500) {
+          console.log('v1***************', mData)
 
-        // check the token is found
-        if (!reqRes || !reqRes.tokens || !reqRes.tokens[0]) {
-          console.log('skippppppppped****', mData.token_id)
-          continue;
-        }
+          const kodaV1 = new ethers.Contract(
+            '0xdde2d979e8d39bb8416eafcfc1758f3cab2c9c72',
+            [
+              {
+                "constant": true,
+                "inputs": [
+                  {
+                    "name": "_tokenId",
+                    "type": "uint256"
+                  }
+                ],
+                "name": "editionInfo",
+                "outputs": [
+                  {
+                    "name": "_tokId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "_edition",
+                    "type": "bytes16"
+                  },
+                  {
+                    "name": "_editionNumber",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "_tokenURI",
+                    "type": "string"
+                  },
+                  {
+                    "name": "_artistAccount",
+                    "type": "address"
+                  }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+              },
+            ],
+            getDefaultProvider(1)
+          )
 
-        const {edition, version} = reqRes.tokens[0];
+          const editionInfo = await kodaV1.editionInfo(mData.token_id)
+          console.log('editionInfo._artistAccount ****', editionInfo._artistAccount)
 
-        // this must be compliant with utils/parse-nodes.js
-        // i.e. expected object structure
-        // {
-        //   token: 'eth-address',
-        //   address: 'eth-address',
-        //     amount: `integer as string`
-        // }
-        if (version === '2') {
-
-          ////////////////////////////
-          // Handle V2 dual collabs //
-          ////////////////////////////
-
-          if (edition.optionalCommissionAccount) {
-            const optionalCommissionRate = BigNumber.from(edition.optionalCommissionRate.toString());
-            const singleUnitOfValue = mData.amount_due_to_creators_bn.div(BigNumber.from('85'));
-            const optionalCommissionAmount = singleUnitOfValue.mul(optionalCommissionRate);
-
-            allMerkleTreeNodes.push({
-              token,
-              address: edition.artistAccount,
-              amount: mData.amount_due_to_creators_bn.sub(optionalCommissionAmount).toString()
-            });
-
-            allMerkleTreeNodes.push({
-              token,
-              address: edition.optionalCommissionAccount,
-              amount: optionalCommissionAmount.toString()
-            });
-          } else {
-            allMerkleTreeNodes.push({
-              token,
-              address: edition.artistAccount,
-              amount: mData.amount_due_to_creators
-            });
-          }
+          allMerkleTreeNodes.push({
+            token,
+            address: editionInfo._artistAccount,
+            amount: mData.amount_due_to_creators
+          });
         } else {
+          // console.log(`Looking up token ID [${mData.token_id}] data - ${mappedData.length - (i + 1)} lookups left`);
+          const reqRes = await getTokenData(mData.token_id);
 
-          /////////////////////////////////
-          // Handle V3 collectives logic //
-          /////////////////////////////////
+          // check the token is found
+          if (!reqRes || !reqRes.tokens || !reqRes.tokens[0]) {
+            console.log('skippppppppped****', mData.token_id)
+            continue;
+          }
 
-          if (edition.collective) {
-            const {recipients, splits} = edition.collective;
+          const {edition, version} = reqRes.tokens[0];
 
-            const v3Modulo = BigNumber.from('10000000');
-            const singleUnitOfValue = BigNumber.from(mData.amount_due_to_creators).div(v3Modulo);
+          // this must be compliant with utils/parse-nodes.js
+          // i.e. expected object structure
+          // {
+          //   token: 'eth-address',
+          //   address: 'eth-address',
+          //     amount: `integer as string`
+          // }
+          if (version === '2') {
 
-            for (let i = 0; i < recipients.length; i++) {
+            ////////////////////////////
+            // Handle V2 dual collabs //
+            ////////////////////////////
+
+            if (edition.optionalCommissionAccount) {
+              const optionalCommissionRate = BigNumber.from(edition.optionalCommissionRate.toString());
+              const singleUnitOfValue = mData.amount_due_to_creators_bn.div(BigNumber.from('85'));
+              const optionalCommissionAmount = singleUnitOfValue.mul(optionalCommissionRate);
+
               allMerkleTreeNodes.push({
                 token,
-                address: recipients[i],
-                amount: singleUnitOfValue.mul(BigNumber.from(splits[i]))
+                address: edition.artistAccount,
+                amount: mData.amount_due_to_creators_bn.sub(optionalCommissionAmount).toString()
+              });
+
+              allMerkleTreeNodes.push({
+                token,
+                address: edition.optionalCommissionAccount,
+                amount: optionalCommissionAmount.toString()
+              });
+            } else {
+              allMerkleTreeNodes.push({
+                token,
+                address: edition.artistAccount,
+                amount: mData.amount_due_to_creators
               });
             }
           } else {
-            allMerkleTreeNodes.push({
-              token,
-              address: edition.artistAccount,
-              amount: mData.amount_due_to_creators
-            });
+
+            /////////////////////////////////
+            // Handle V3 collectives logic //
+            /////////////////////////////////
+
+            if (edition.collective) {
+              const {recipients, splits} = edition.collective;
+
+              const v3Modulo = BigNumber.from('10000000');
+              const singleUnitOfValue = BigNumber.from(mData.amount_due_to_creators).div(v3Modulo);
+
+              for (let i = 0; i < recipients.length; i++) {
+                allMerkleTreeNodes.push({
+                  token,
+                  address: recipients[i],
+                  amount: singleUnitOfValue.mul(BigNumber.from(splits[i]))
+                });
+              }
+            } else {
+              allMerkleTreeNodes.push({
+                token,
+                address: edition.artistAccount,
+                amount: mData.amount_due_to_creators
+              });
+            }
           }
         }
       }
@@ -287,9 +344,11 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
       
       Actual amount counted: [${utils.formatEther(cumulativeEventTotalInEth.toString())}]
       
-      Total ETH in merkel tree nodes: [${utils.formatEther(totalETHInMerkleTreeNodes).toString()}]
+      Total ETH in merkle tree nodes: [${utils.formatEther(totalETHInMerkleTreeNodes).toString()}]
       
-      Total ETH in merkel tree: [${utils.formatEther(BigNumber.from(merkleTree.tokenTotal)).toString()}]
+      Total ETH in merkle tree: [${utils.formatEther(BigNumber.from(merkleTree.tokenTotal)).toString()}]
+      
+      Is total ETH in tree == expected amount?? [${utils.formatEther(expectedETH.toString()) === utils.formatEther(BigNumber.from(merkleTree.tokenTotal)).toString()}]
      
       Total reduced merkle tree nodes: [${allMerkleTreeNodesReduced.length}]
     `);

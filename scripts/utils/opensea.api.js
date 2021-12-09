@@ -32,7 +32,11 @@ async function getEventsForContract(version, startDate, endDate, eventType = 'su
     console.log(`query OpenSea data from [${moment.unix(currentUnix).format()}] to [${moment.unix(endDateTime).format()}] - request [${numOfRequests}]`);
 
     const {data} = await axios.get(getOpenSeaUrl(currentUnix, endDateTime, eventType), {
-      'X-API-KEY': OPENSEA_API_KEY
+      'X-API-KEY': OPENSEA_API_KEY,
+      headers: {
+        'X-API-KEY': OPENSEA_API_KEY,
+        'Accept': 'application/json'
+      }
     });
 
     events = _.concat(events, data.asset_events);
@@ -46,7 +50,11 @@ async function getEventsForContract(version, startDate, endDate, eventType = 'su
     console.log(`query OpenSea data from [${moment.unix(currentUnix).format()}] to [${moment.unix(endDateUnix).format()}] - request [${numOfRequests}]`);
 
     const {data} = await axios.get(getOpenSeaUrl(currentUnix, endDateUnix, eventType), {
-      'X-API-KEY': OPENSEA_API_KEY
+      'X-API-KEY': OPENSEA_API_KEY,
+      headers: {
+        'X-API-KEY': OPENSEA_API_KEY,
+        'Accept': 'application/json'
+      }
     });
     events = _.concat(events, data.asset_events);
   }
@@ -68,19 +76,13 @@ const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, de
   const removedEvents = [];
 
   const filteredEvents = _.filter(events, (event) => {
-    const isIncluded = (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH')
+    const isIncluded =
+      (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH')
       && event.asset // ensure an asset
       && event.asset.token_id // ensure asset has a token ID
-      && parseInt(event.asset.token_id) >= fromTokenId // ensure asset has a token ID greater than fromTokenId
-      && event.dev_fee_payment_event // ensure there is a dev payment event
-      && event.dev_fee_payment_event.event_type // ensure that we can query event type
-      && event.dev_fee_payment_event.event_type === 'payout' /// ensure type is payoyt
-      && event.dev_fee_payment_event.transaction // ensure we can query tx
-      && event.dev_fee_payment_event.transaction.transaction_hash // ensure there is a tx hash
-      && !event.is_private // ensure we are not looking at private events
-      && (devFeeOverridesForTokens && devFeeOverridesForTokens[event.asset.token_id.toString()])
+      && event.dev_seller_fee_basis_points // ensure the dev fee set when item was listed is present
 
-    if (!isIncluded && event.asset && event.asset.token_id && parseInt(event.asset.token_id) <= fromTokenId) {
+    if (!isIncluded && event.asset && event.asset.token_id) {
       removedEvents.push(event)
     }
 
@@ -97,9 +99,9 @@ const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, de
   const modulo = ethers.BigNumber.from('100000');
 
   // map the events to common format we can work with
-  const mappedData = _.map(filteredEvents, ({asset, total_price, created_date, transaction}) => {
+  const mappedData = _.map(filteredEvents, ({asset, total_price, created_date, transaction, dev_seller_fee_basis_points}) => {
 
-    let _vaultCommission = vaultCommission
+    let _vaultCommission = dev_seller_fee_basis_points / 100
     const token_id = asset.token_id
 
     if (devFeeOverridesForTokens && devFeeOverridesForTokens[token_id.toString()]) {
