@@ -1,12 +1,13 @@
 const moment = require('moment');
 const _ = require('lodash');
 const fs = require('fs');
-const {ethers, getDefaultProvider} = require('ethers')
+const {kodaV1, abi} = require('koda-contract-tools');
+const {ethers, getDefaultProvider} = require('ethers');
 
 const {parseNodesAndBuildMerkleTree} = require('../../utils/parse-nodes');
 
 const {getTokenData} = require('../utils/subgraph.service');
-const {getEventsForContract, filterAndMapOpenSeaData} = require('../utils/opensea.api');
+const {getEventsForContract, filterAndMapOpenSeaEthData} = require('../utils/opensea.api');
 
 task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
   .addParam('startDate', 'Start Date')
@@ -42,17 +43,13 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
       /// Gather data on NFT contracts
       /// ---------------------------------
 
-      // TODO add more sense checks/validation
-
-      // TODO it looks like the same data is returned for both contacts?
-
-      // Get all events from V2 & V3 sales
+      // Get all events from V1, V2 & V3 sales
       let events = await getEventsForContract(merkleTreeVersion, startDate, endDate);
 
       // for ETH based payments, we encode the token as the zero address in the tree
       const token = '0x0000000000000000000000000000000000000000';
 
-      let mappedData = filterAndMapOpenSeaData(vaultCommission, platformCommission, events);
+      let mappedData = filterAndMapOpenSeaEthData(vaultCommission, platformCommission, events);
 
       /// ---------------------------------
       /// Count up royalties & commissions
@@ -156,52 +153,15 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
 
         // is this a v1 token? else go down a different path to process v2 and v3
         if (parseInt(mData.token_id) <= 4500) {
-          console.log('v1***************', mData)
 
-          const kodaV1 = new ethers.Contract(
-            '0xdde2d979e8d39bb8416eafcfc1758f3cab2c9c72',
-            [
-              {
-                "constant": true,
-                "inputs": [
-                  {
-                    "name": "_tokenId",
-                    "type": "uint256"
-                  }
-                ],
-                "name": "editionInfo",
-                "outputs": [
-                  {
-                    "name": "_tokId",
-                    "type": "uint256"
-                  },
-                  {
-                    "name": "_edition",
-                    "type": "bytes16"
-                  },
-                  {
-                    "name": "_editionNumber",
-                    "type": "uint256"
-                  },
-                  {
-                    "name": "_tokenURI",
-                    "type": "string"
-                  },
-                  {
-                    "name": "_artistAccount",
-                    "type": "address"
-                  }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-              },
-            ],
+          const kodaV1Contract = new ethers.Contract(
+            kodaV1.getKodaV1Address('mainnet'),
+            abi.kodaV1,
             getDefaultProvider(1)
-          )
+        )
 
-          const editionInfo = await kodaV1.editionInfo(mData.token_id)
-          console.log('editionInfo._artistAccount ****', editionInfo._artistAccount)
+          const editionInfo = await kodaV1Contract.editionInfo(mData.token_id);
+          console.log('editionInfo._artistAccount ****', editionInfo._artistAccount);
 
           allMerkleTreeNodes.push({
             token,
@@ -214,7 +174,6 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
 
           // check the token is found
           if (!reqRes || !reqRes.tokens || !reqRes.tokens[0]) {
-            console.log('skippppppppped****', mData.token_id)
             continue;
           }
 

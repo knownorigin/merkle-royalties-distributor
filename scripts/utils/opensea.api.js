@@ -69,7 +69,7 @@ async function getEventsForContract(version, startDate, endDate, eventType = 'su
   return events;
 }
 
-const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, devFeeOverridesForTokens, fromTokenId = 4500) => {
+const filterAndMapOpenSeaEthData = (vaultCommission, platformCommission, events, devFeeOverridesForTokens, fromTokenId = 4500) => {
   console.log('Filtering data for specific payment token [ETH]');
 
   // ensure we filter for the correct payment token and ensure we get back a token ID
@@ -133,8 +133,6 @@ const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, de
     };
   });
 
-  // TODO is this valid - do batch trades share the same transaction ID ... ?
-
   // Get unique TX IDs only
   return _.uniqBy(
     // Sort by timestamp
@@ -144,5 +142,5 @@ const filterAndMapOpenSeaData = (vaultCommission, platformCommission, events, de
 
 module.exports = {
   getEventsForContract,
-  filterAndMapOpenSeaData
+  filterAndMapOpenSeaEthData
 };
