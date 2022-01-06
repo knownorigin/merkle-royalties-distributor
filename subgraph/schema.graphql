@@ -1,0 +1,14 @@
+type Claim @entity {
+  id: ID!
+  caller: Bytes!
+  isCallerBeneficiary: Boolean!
+  token: Bytes!
+  amount: BigInt!
+  version: BigInt!
+}
+
+type ETHReceived @entity {
+  id: ID!
+  amount: BigInt!
+  from: Bytes!
+}

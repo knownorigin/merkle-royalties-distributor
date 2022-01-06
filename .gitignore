@@ -10,3 +10,5 @@ coverage
 .idea/
 .env
 os-vault.iml
+build/
+generated/
