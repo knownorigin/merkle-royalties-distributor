@@ -184,7 +184,7 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
           // {
           //   token: 'eth-address',
           //   address: 'eth-address',
-          //     amount: `integer as string`
+          //   amount: `integer as string`
           // }
           if (version === '2') {
 
