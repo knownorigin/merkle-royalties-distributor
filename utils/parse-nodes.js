@@ -43,11 +43,15 @@ function parseNodesAndBuildMerkleTree(nodes) {
     }
 
     const checksummedAddress = getAddress(account);
-    if (memo[checksummedAddress]) throw new Error(`Duplicate address: ${checksummedAddress}`);
+    if (memo[checksummedAddress]) {
+      throw new Error(`Duplicate address: ${checksummedAddress}`);
+    }
 
     const amountBN = _ethers.BigNumber.from(amount);
 
-    if (amountBN.lte(0)) throw new Error(`Invalid amount for account: ${checksummedAddress}`);
+    if (amountBN.lte(0)) {
+      throw new Error(`Invalid amount for account: ${checksummedAddress}`);
+    }
 
     memo[checksummedAddress] = {
       token: token,
