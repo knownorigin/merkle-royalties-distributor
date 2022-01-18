@@ -92,4 +92,6 @@ task('reconcile', 'Reconcile')
 
     fs.writeFileSync(`./data/reconcile/merkletree-${currentMerkleVersion}-eth-deposits.json`, JSON.stringify(eventDate, null, 2));
 
+    // TODO sense check - unclaimed ETH + new deposited ETH = current vault balance
+
   });

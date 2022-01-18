@@ -69,7 +69,7 @@ async function getEventsForContract(version, startDate, endDate, eventType = 'su
   return events;
 }
 
-const filterAndMapOpenSeaEthData = (vaultCommission, platformCommission, events, devFeeOverridesForTokens) => {
+const filterAndMapOpenSeaEthData = (platformCommission, events) => {
   console.log('Filtering data for specific payment token [ETH]');
 
   // ensure we filter for the correct payment token and ensure we get back a token ID
@@ -111,10 +111,6 @@ const filterAndMapOpenSeaEthData = (vaultCommission, platformCommission, events,
 
       let _vaultCommission = dev_seller_fee_basis_points / 100;
       const token_id = asset.token_id;
-
-      if (devFeeOverridesForTokens && devFeeOverridesForTokens[token_id.toString()]) {
-        _vaultCommission = parseFloat(devFeeOverridesForTokens[token_id.toString()].devFee) / 1000.00;
-      }
 
       const totalPriceBn = ethers.BigNumber.from(total_price);
       const vaultCommissionScaledBn = ethers.BigNumber.from((parseFloat(_vaultCommission) * 1000).toString());
