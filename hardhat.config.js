@@ -7,6 +7,7 @@ require('@nomiclabs/hardhat-etherscan');
 require('./scripts/opensea/opensea');
 require('./scripts/opensea/pin-merkle-tree-to-ipfs');
 require('./scripts/opensea/reconcile');
+require('./scripts/opensea/merge');
 require('./scripts/opensea/generate_test_tree');
 
 const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;

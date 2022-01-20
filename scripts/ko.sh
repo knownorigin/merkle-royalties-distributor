@@ -12,9 +12,9 @@
 
 # Second run --from-block 13817013 --to-block 13981749
 yarn open-sea-events \
-  --start-date '1639612800' \
-  --end-date '1641871260' \
+  --start-date '1639484760' \
+  --end-date '1642656560' \
   --platform-commission 2.5 \
   --platform-account '0xde9e5eE9E7cD43399969Cfb1C0E5596778c6464F' \
-  --merkle-tree-version "3" \
-  --eth-payout-amount "16.349575"
+  --merkle-tree-version "4" \
+  --eth-payout-amount "28.921175"
