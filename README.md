@@ -44,6 +44,32 @@ The flow is:
 - This then needs to be merged with the nodes from the next version of the tree taking care to factor in that a
   beneficiary may have received more ETH since the last version of the tree
 
+You would do this by running:
+```
+./scripts/reconcile.sh
+```
+
+It will also tell you how much ETH has landed in the contract since your customers have claimed.
+
+## All together
+
+Let's say you had a merkle tree live in the vault, if you wanted to work out who had claimed, how much ETH had been received since the last merkle version and then add in any new beneficiaries that had done sales on open sea, you would likely run the following scripts all together:
+```
+./scripts/reconcile.sh
+./scripts/ko.sh
+./scripts/merge.sh
+```
+
+It is important that `merge` is run last as it will merge the list of beneficiaries that had not claimed ETH in the current version of the tree with the new beneficicaries that are able to claim the new ETH received to the vault
+
+you can finally push to ipfs by running
+
+```
+./scripts/ipfs.sh
+```
+
+But do check through these scripts. They are configured with example parameters that you can change and automate yourself.
+
 ### Deployments in the wild
 
 **DEPLOY YOUR OWN VERSION - YOU CANNOT USE THESE**
