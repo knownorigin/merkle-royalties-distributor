@@ -16,5 +16,5 @@ yarn open-sea-events \
   --end-date '1642656560' \
   --platform-commission 2.5 \
   --platform-account '0xde9e5eE9E7cD43399969Cfb1C0E5596778c6464F' \
-  --merkle-tree-version "4" \
+  --merkle-tree-version "3" \
   --eth-payout-amount "28.921175"
