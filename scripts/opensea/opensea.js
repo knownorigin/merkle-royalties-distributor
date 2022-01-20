@@ -283,6 +283,8 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
         amount: allMerkleTreeNodesReducedObject[key].amount.toString()
       }));
 
+      fs.writeFileSync(`./data/live/merkletree-nodes-${merkleTreeVersion}.json`, JSON.stringify(allMerkleTreeNodesReduced, null, 2));
+
       const merkleTree = parseNodesAndBuildMerkleTree(allMerkleTreeNodesReduced);
       // console.log('merkle tree built', merkleTree);
 
