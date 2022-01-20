@@ -66,7 +66,7 @@ task('reconcile', 'Reconcile')
     const unclaimedEther = _.reduce(additionalMerkleNodesForNextVersion, (result, data) => {
       return ethers.BigNumber.from(data.amount).add(ethers.BigNumber.from(result));
     }, '0');
-    console.log(`Total unclaimed ETH`, ethers.utils.formatEther(unclaimedEther));
+    console.log(`Total unclaimed ETH from current tree`, ethers.utils.formatEther(unclaimedEther));
 
     fs.writeFileSync(`./data/reconcile/merkletree-${currentMerkleVersion}-unclaimed-beneficiaries.json`, JSON.stringify(additionalMerkleNodesForNextVersion, null, 2));
 

@@ -18,7 +18,7 @@ module.exports = {
     );
 
     const currentMerkleVersion = await vault.merkleVersion();
-    console.log('Found current merkle version', currentMerkleVersion);
+    console.log('Found current merkle tree version', currentMerkleVersion.toString());
 
     const {dataIPFSHash} = await vault.merkleVersionMetadata(currentMerkleVersion);
     console.log('IPFS hosted tree data', dataIPFSHash);
