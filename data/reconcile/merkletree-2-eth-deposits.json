@@ -1,0 +1,32 @@
+[
+  {
+    "blockNumber": 13823430,
+    "transactionHash": "0x5355b737d7747e4913f983e423e597b1b2de1dc3d8d17dd3943ee3319d584a7a",
+    "amount": "5755237500000000000"
+  },
+  {
+    "blockNumber": 13876671,
+    "transactionHash": "0xdd4dec52cf1ee2b8283db7c49376814fe0c6ecbb8df88ca73f14f7328d41815d",
+    "amount": "6639687500000000000"
+  },
+  {
+    "blockNumber": 13900209,
+    "transactionHash": "0xf1765e297a3b5abaae305975079d47dda8bceedfe839b43dc155f7240eef5ca7",
+    "amount": "2058312500000000000"
+  },
+  {
+    "blockNumber": 13939459,
+    "transactionHash": "0x39e4c11a02bc39cbb440acd1d47a76b63af630fc78647a68ca07105eb777cb2f",
+    "amount": "1441337500000000000"
+  },
+  {
+    "blockNumber": 13981749,
+    "transactionHash": "0xc861d11e31baff5a91433a6936218e7b091dd8b47336a59c72e990d3be6540f1",
+    "amount": "455000000000000000"
+  },
+  {
+    "blockNumber": 14040539,
+    "transactionHash": "0xdb2eb52d830e29c368064630b0ae93053bf0b28c8e6558977a530568e47a1a7b",
+    "amount": "12571600000000000000"
+  }
+]

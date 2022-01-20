@@ -1,0 +1,22 @@
+[
+  {
+    "total_price": "5000000000000000000",
+    "total_commission": 750000000000000000,
+    "vault_commission": "625000000000000000",
+    "opensea_commission": "125000000000000000",
+    "platform_commission": "15625000000000000",
+    "platform_commission_bn": {
+      "type": "BigNumber",
+      "hex": "0x3782dace9d9000"
+    },
+    "amount_due_to_creators": "609375000000000000",
+    "amount_due_to_creators_bn": {
+      "type": "BigNumber",
+      "hex": "0x0874ef557a00f000"
+    },
+    "created_date": "2022-01-20T03:04:24.206801",
+    "token_id": "634603",
+    "timestamp": "2022-01-20T03:03:48",
+    "txId": 252827152
+  }
+]

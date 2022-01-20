@@ -12,7 +12,6 @@ const {getEventsForContract, filterAndMapOpenSeaEthData} = require('../utils/ope
 task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
   .addParam('startDate', 'Start Date')
   .addParam('endDate', 'End Date')
-  .addParam('vaultCommission', 'Commission sent to vault from an OpenSea sale')
   .addParam('platformCommission', 'Of the commission sent to the vault, the percentage that goes to platform')
   .addParam('platformAccount', 'Platform account address that will receive a split of the vault')
   .addParam('merkleTreeVersion', 'The version of the file to pin')
@@ -28,7 +27,6 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
       const {
         startDate,
         endDate,
-        vaultCommission,
         platformCommission,
         platformAccount,
         merkleTreeVersion,
@@ -49,7 +47,7 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
       // for ETH based payments, we encode the token as the zero address in the tree
       const token = '0x0000000000000000000000000000000000000000';
 
-      let mappedData = filterAndMapOpenSeaEthData(vaultCommission, platformCommission, events);
+      let mappedData = filterAndMapOpenSeaEthData(platformCommission, events);
 
       /// ---------------------------------
       /// Count up royalties & commissions
@@ -88,8 +86,6 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
         platformCommissionCounter = BigNumber.from('0');
 
         let filteredEvents = [];
-
-        // TODO is the assumption here that the missing events are always the latest events to happen, why?
 
         // recount all events and try and find what event was missing
         mappedData.forEach((mData) => {
@@ -184,7 +180,7 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
           // {
           //   token: 'eth-address',
           //   address: 'eth-address',
-          //     amount: `integer as string`
+          //   amount: `integer as string`
           // }
           if (version === '2') {
 
@@ -286,6 +282,8 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
         ...allMerkleTreeNodesReducedObject[key],
         amount: allMerkleTreeNodesReducedObject[key].amount.toString()
       }));
+
+      fs.writeFileSync(`./data/live/merkletree-nodes-${merkleTreeVersion}.json`, JSON.stringify(allMerkleTreeNodesReduced, null, 2));
 
       const merkleTree = parseNodesAndBuildMerkleTree(allMerkleTreeNodesReduced);
       // console.log('merkle tree built', merkleTree);

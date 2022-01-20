@@ -69,28 +69,35 @@ async function getEventsForContract(version, startDate, endDate, eventType = 'su
   return events;
 }
 
-const filterAndMapOpenSeaEthData = (vaultCommission, platformCommission, events, devFeeOverridesForTokens, fromTokenId = 4500) => {
+const filterAndMapOpenSeaEthData = (platformCommission, events) => {
   console.log('Filtering data for specific payment token [ETH]');
 
   // ensure we filter for the correct payment token and ensure we get back a token ID
   const removedEvents = [];
 
   const filteredEvents = _.filter(events, (event) => {
+    const is_private = event.is_private ? event.is_private : false;
+
     const isIncluded =
       (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH')
+      && !is_private // ensure not OTC
       && event.asset // ensure an asset
       && event.asset.token_id // ensure asset has a token ID
-      && event.dev_seller_fee_basis_points // ensure the dev fee set when item was listed is present
+      && event.dev_seller_fee_basis_points; // ensure the dev fee set when item was listed is present
 
     if (!isIncluded && event.asset && event.asset.token_id) {
-      removedEvents.push(event)
+      removedEvents.push(event);
+    }
+
+    if (is_private) {
+      console.log(`Found private sale - token ID [${_.get(event, 'asset.token_id', 'N/A')}] ID [${event.transaction.id}] TX [${event.transaction.transaction_hash}]`);
     }
 
     return isIncluded;
   });
 
   if (removedEvents.length > 0) {
-    console.log('number of removed events from open sea event list', removedEvents.length)
+    console.log('number of removed events from open sea event list', removedEvents.length);
     const fileName = `${moment.unix(Date.now() / 1000).format('YYYY-DD-MM_HH-mm-ss')}_removed_tokens.json`;
     fs.writeFileSync(`./data/events/${fileName}`, JSON.stringify(removedEvents, null, 2));
   }
@@ -99,45 +106,38 @@ const filterAndMapOpenSeaEthData = (vaultCommission, platformCommission, events,
   const modulo = ethers.BigNumber.from('100000');
 
   // map the events to common format we can work with
-  const mappedData = _.map(filteredEvents, ({asset, total_price, created_date, transaction, dev_seller_fee_basis_points}) => {
+  const mappedData = _.map(filteredEvents,
+    ({asset, total_price, created_date, transaction, dev_seller_fee_basis_points}) => {
 
-    let _vaultCommission = dev_seller_fee_basis_points / 100
-    const token_id = asset.token_id
+      let _vaultCommission = dev_seller_fee_basis_points / 100;
+      const token_id = asset.token_id;
 
-    if (devFeeOverridesForTokens && devFeeOverridesForTokens[token_id.toString()]) {
-      _vaultCommission = parseFloat(devFeeOverridesForTokens[token_id.toString()].devFee) / 1000.00
-      console.log(_vaultCommission)
-    }
+      const totalPriceBn = ethers.BigNumber.from(total_price);
+      const vaultCommissionScaledBn = ethers.BigNumber.from((parseFloat(_vaultCommission) * 1000).toString());
+      const platformCommissionScaledBn = ethers.BigNumber.from((parseFloat(platformCommission) * 1000).toString());
+      const vault_commission = totalPriceBn.div(modulo).mul(vaultCommissionScaledBn);
+      const platform_commission = vault_commission.div(modulo).mul(platformCommissionScaledBn);
 
-    const totalPriceBn = ethers.BigNumber.from(total_price);
-    const vaultCommissionScaledBn = ethers.BigNumber.from((parseFloat(_vaultCommission) * 1000).toString());
-    const platformCommissionScaledBn = ethers.BigNumber.from((parseFloat(platformCommission) * 1000).toString());
-    const vault_commission = totalPriceBn.div(modulo).mul(vaultCommissionScaledBn);
-    const platform_commission = vault_commission.div(modulo).mul(platformCommissionScaledBn);
+      const amount_due_to_creators = vault_commission.sub(platform_commission);
 
-    const amount_due_to_creators = vault_commission.sub(platform_commission);
+      return {
+        total_price,
+        total_commission: total_price * (getFullCommissionTakenFromOpenSeaSale(parseFloat(_vaultCommission)) / 100),
+        vault_commission: vault_commission.toString(),
+        opensea_commission: (total_price * (getFullCommissionTakenFromOpenSeaSale(0.0) / 100)).toString(),
+        platform_commission: platform_commission.toString(),
+        platform_commission_bn: platform_commission,
+        amount_due_to_creators: amount_due_to_creators.toString(),
+        amount_due_to_creators_bn: amount_due_to_creators,
+        created_date,
+        token_id,
+        timestamp: transaction.timestamp,
+        txId: transaction.id
+      };
+    });
 
-    return {
-      total_price,
-      total_commission: total_price * (getFullCommissionTakenFromOpenSeaSale(parseFloat(_vaultCommission)) / 100),
-      vault_commission: vault_commission.toString(),
-      opensea_commission: (total_price * (getFullCommissionTakenFromOpenSeaSale(0.0) / 100)).toString(),
-      platform_commission: platform_commission.toString(),
-      platform_commission_bn: platform_commission,
-      amount_due_to_creators: amount_due_to_creators.toString(),
-      amount_due_to_creators_bn: amount_due_to_creators,
-      created_date,
-      token_id,
-      timestamp: transaction.timestamp,
-      txId: transaction.id
-    };
-  });
-
-  // Get unique TX IDs only
-  return _.uniqBy(
-    // Sort by timestamp
-    _.sortBy(mappedData, ['timestamp'])
-    , 'txId');
+  // Get unique TX IDs sorted by date
+  return _.uniqBy(_.sortBy(mappedData, ['timestamp']), 'txId');
 };
 
 module.exports = {

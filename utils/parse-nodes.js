@@ -28,6 +28,9 @@ function parseNodesAndBuildMerkleTree(nodes) {
   //   address: 'eth-address',
   //     amount: `integer`
   // }
+  if (!nodes || !nodes.length || nodes.length === 0) {
+    throw new Error('Invalid object')
+  }
 
   const dataByAddress = nodes.reduce((memo, {
     token,
@@ -43,11 +46,17 @@ function parseNodesAndBuildMerkleTree(nodes) {
     }
 
     const checksummedAddress = getAddress(account);
-    if (memo[checksummedAddress]) throw new Error(`Duplicate address: ${checksummedAddress}`);
-
     const amountBN = _ethers.BigNumber.from(amount);
 
-    if (amountBN.lte(0)) throw new Error(`Invalid amount for account: ${checksummedAddress}`);
+    if (memo[checksummedAddress]) {
+      memo[checksummedAddress].amount = memo[checksummedAddress].amount.add(
+        amountBN
+      )
+    }
+
+    if (amountBN.lte(0)) {
+      throw new Error(`Invalid amount for account: ${checksummedAddress}`);
+    }
 
     memo[checksummedAddress] = {
       token: token,
