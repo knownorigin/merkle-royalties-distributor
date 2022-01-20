@@ -15,7 +15,7 @@ task("pin-merkle-tree-to-ipfs", "Pins the merkle tree from file to IPFS via pina
       console.log(`Starting task...`);
       console.log(`Version`, merkleTreeVersion);
 
-      const results = await pinata.pinFileToIPFS(fs.createReadStream(`./data/live/merkletree-${merkleTreeVersion}.json`));
+      const results = await pinata.pinFileToIPFS(fs.createReadStream(`./data/live/merged-merkletree-${merkleTreeVersion}.json`));
       console.log(`Pinning IPFS merkle tree, ipfs hash: ${results.IpfsHash}`);
     }
   );
