@@ -1,4 +1,4 @@
-const sleep = async (delay = 1001) => {
+const sleep = async (delay = 1100) => {
   return new Promise(resolve => {
     setTimeout(() => resolve(), delay);
   });

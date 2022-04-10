@@ -20,12 +20,13 @@ task('get-eth-deposits', 'Scrape all ETH deposits from the vault')
       parseInt(toBlock)
     );
 
-    console.log(ethReceivedEvents);
+    // console.log(ethReceivedEvents);
 
     let totalPayout = ethers.BigNumber.from('0');
 
-    ethReceivedEvents.forEach(({args}) => {
-      console.log('args.amount', args.amount);
+    ethReceivedEvents.forEach((event) => {
+      const {args} = event;
+      console.log(`Found [${ethers.utils.formatEther(args.amount)}] in tx [${event.transactionHash}]`);
       totalPayout = totalPayout.add(args.amount);
     });
 
