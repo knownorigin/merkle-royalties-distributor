@@ -10,6 +10,7 @@ require('./scripts/tasks/reconcile');
 require('./scripts/tasks/merge');
 require('./scripts/tasks/generate_test_tree');
 require('./scripts/tasks/get-eth-deposits');
+require('./scripts/tasks/master-reconcile');
 
 const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
 const PRIVATE_KEY = process.env.OS_VAULT_PRIVATE_KEY;

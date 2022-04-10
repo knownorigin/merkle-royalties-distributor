@@ -8,6 +8,7 @@ const {parseNodesAndBuildMerkleTree} = require('../../utils/parse-nodes');
 
 const {getTokenData} = require('../utils/subgraph.service');
 const {getEventsForContract, filterAndMapOpenSeaEthData} = require('../utils/opensea.api');
+const {sumBigNumbers} = require('../utils/utils');
 
 task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
   .addParam('startDate', 'Start Date')
@@ -17,10 +18,6 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
   .addParam('merkleTreeVersion', 'The version of the file to pin')
   .addParam('ethPayoutAmount', 'Amount of ETH that was last paid by OpenSea')
   .setAction(async taskArgs => {
-
-      function sumBigNumbers(array, field) {
-        return array.reduce((memo, data) => memo.add(data[field]), BigNumber.from('0'));
-      }
 
       const {utils, BigNumber} = ethers;
 
