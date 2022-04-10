@@ -11,10 +11,19 @@
 #  --eth-payout-amount "172.0906685"
 
 # Second run --from-block 13817013 --to-block 13981749
+#yarn open-sea-events \
+#  --start-date '1639484760' \
+#  --end-date '1642656560' \
+#  --platform-commission 2.5 \
+#  --platform-account '0xde9e5eE9E7cD43399969Cfb1C0E5596778c6464F' \
+#  --merkle-tree-version "3" \
+#  --eth-payout-amount "28.921175"
+
+# Third run --from-block 14042604 --to-block 14516796
 yarn open-sea-events \
-  --start-date '1639484760' \
-  --end-date '1642656560' \
+  --start-date '1642680540' \
+  --end-date '1649573056' \
   --platform-commission 2.5 \
   --platform-account '0xde9e5eE9E7cD43399969Cfb1C0E5596778c6464F' \
-  --merkle-tree-version "3" \
-  --eth-payout-amount "28.921175"
+  --merkle-tree-version "4" \
+  --eth-payout-amount "20.841522499999999988"

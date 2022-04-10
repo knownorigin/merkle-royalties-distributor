@@ -157,7 +157,7 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
         )
 
           const editionInfo = await kodaV1Contract.editionInfo(mData.token_id);
-          console.log('editionInfo._artistAccount ****', editionInfo._artistAccount);
+          console.log(`KO V1: Token ID [${mData.token_id}]: Adding [${mData.amount_due_to_creators.toString()}] for artists account [${editionInfo._artistAccount}]`);
 
           allMerkleTreeNodes.push({
             token,
@@ -193,18 +193,22 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
               const singleUnitOfValue = mData.amount_due_to_creators_bn.div(BigNumber.from('85'));
               const optionalCommissionAmount = singleUnitOfValue.mul(optionalCommissionRate);
 
+              const amountMinusCollab = mData.amount_due_to_creators_bn.sub(optionalCommissionAmount).toString();
+              console.log(`KO V2: Token ID [${mData.token_id}]: Adding [${amountMinusCollab.toString()}] to artist [${edition.artistAccount}]`);
               allMerkleTreeNodes.push({
                 token,
                 address: edition.artistAccount,
-                amount: mData.amount_due_to_creators_bn.sub(optionalCommissionAmount).toString()
+                amount: amountMinusCollab
               });
 
+              console.log(`KO V2: Token ID [${mData.token_id}]: Adding [${optionalCommissionAmount.toString()}] to collab [${edition.optionalCommissionAccount}]`);
               allMerkleTreeNodes.push({
                 token,
                 address: edition.optionalCommissionAccount,
                 amount: optionalCommissionAmount.toString()
               });
             } else {
+              console.log(`KO V2: Token ID [${mData.token_id}]: Adding [${mData.amount_due_to_creators}] to artist [${edition.artistAccount}]`);
               allMerkleTreeNodes.push({
                 token,
                 address: edition.artistAccount,
@@ -230,7 +234,9 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
                   amount: singleUnitOfValue.mul(BigNumber.from(splits[i]))
                 });
               }
+              console.log(`KO V3: Token ID [${mData.token_id}]: Adding [${mData.amount_due_to_creators}] to collective [${recipients.toString()}]`);
             } else {
+              console.log(`KO V3: Token ID [${mData.token_id}]: Adding [${mData.amount_due_to_creators}] to artist [${edition.artistAccount}]`);
               allMerkleTreeNodes.push({
                 token,
                 address: edition.artistAccount,
@@ -247,6 +253,7 @@ task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
         address: platformAccount,
         amount: platformCommissionCounter.toString()
       });
+    console.log(`KO Commission: Adding [${platformCommissionCounter.toString()}] to artist [${platformAccount}]`);
 
       const totalETHInMerkleTreeNodes = allMerkleTreeNodes.reduce((memo, {amount}) => {
         const amountBn = BigNumber.from(amount);

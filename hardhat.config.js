@@ -4,11 +4,12 @@ require("@nomiclabs/hardhat-truffle5");
 require('solidity-coverage');
 require('hardhat-gas-reporter');
 require('@nomiclabs/hardhat-etherscan');
-require('./scripts/opensea/opensea');
-require('./scripts/opensea/pin-merkle-tree-to-ipfs');
-require('./scripts/opensea/reconcile');
-require('./scripts/opensea/merge');
-require('./scripts/opensea/generate_test_tree');
+require('./scripts/tasks/opensea');
+require('./scripts/tasks/pin-merkle-tree-to-ipfs');
+require('./scripts/tasks/reconcile');
+require('./scripts/tasks/merge');
+require('./scripts/tasks/generate_test_tree');
+require('./scripts/tasks/get-eth-deposits');
 
 const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
 const PRIVATE_KEY = process.env.OS_VAULT_PRIVATE_KEY;
