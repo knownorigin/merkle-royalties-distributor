@@ -19,11 +19,11 @@
 #  --merkle-tree-version "3" \
 #  --eth-payout-amount "28.921175"
 
-# Third run --from-block 14042604 --to-block 14516796
+# Third run
 yarn open-sea-events \
-  --start-date '1642680540' \
-  --end-date '1649573056' \
+  --from-block 14040539 \
+  --to-block 14560763 \
   --platform-commission 2.5 \
   --platform-account '0xde9e5eE9E7cD43399969Cfb1C0E5596778c6464F' \
   --merkle-tree-version "4" \
-  --eth-payout-amount "20.841522499999999988"
+  --eth-payout-amount "20.881522499999999988"

@@ -11,24 +11,32 @@ const {getEventsForContract, filterAndMapOpenSeaEthData} = require('../utils/ope
 const {sumBigNumbers} = require('../utils/utils');
 
 task('open-sea-events', 'Gets OpenSea sale events between 2 dates for an NFT')
-  .addParam('startDate', 'Start Date')
-  .addParam('endDate', 'End Date')
+  .addParam('fromBlock', 'From block')
+  .addParam('toBlock', 'To block')
   .addParam('platformCommission', 'Of the commission sent to the vault, the percentage that goes to platform')
   .addParam('platformAccount', 'Platform account address that will receive a split of the vault')
   .addParam('merkleTreeVersion', 'The version of the file to pin')
   .addParam('ethPayoutAmount', 'Amount of ETH that was last paid by OpenSea')
-  .setAction(async taskArgs => {
+  .setAction(async (taskArgs, hre) => {
 
       const {utils, BigNumber} = ethers;
+      const provider = new ethers.providers.InfuraProvider(1, {
+        projectSecret: process.env.INFURA_PROJECT_SECRET,
+        projectId: process.env.INFURA_PROJECT_ID,
+      });
 
       const {
-        startDate,
-        endDate,
+        fromBlock,
+        toBlock,
         platformCommission,
         platformAccount,
         merkleTreeVersion,
         ethPayoutAmount
       } = taskArgs;
+
+      // Get start and end dates from the provided block range
+      const startDate = (await provider.getBlock(parseInt(fromBlock))).timestamp;
+      const endDate = (await provider.getBlock(parseInt(toBlock))).timestamp;
 
       console.log(`Starting task...`, taskArgs);
 

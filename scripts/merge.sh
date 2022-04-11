@@ -1,1 +1,1 @@
-yarn hardhat master-reconcile
+yarn hardhat merge --merkle-version 4 --vault-version 3
