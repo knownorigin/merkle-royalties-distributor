@@ -55,12 +55,15 @@ It will also tell you how much ETH has landed in the contract since your custome
 
 Let's say you had a merkle tree live in the vault, if you wanted to work out who had claimed, how much ETH had been received since the last merkle version and then add in any new beneficiaries that had done sales on open sea, you would likely run the following scripts all together:
 ```
-./scripts/reconcile.sh
-./scripts/ko.sh
-./scripts/merge.sh
+./scripts/get-deposits.sh       
+./scripts/reconcile.sh   
+./scripts/ko.sh         
+./scripts/merge.sh      
 ```
 
-It is important that `merge` is run last as it will merge the list of beneficiaries that had not claimed ETH in the current version of the tree with the new beneficicaries that are able to claim the new ETH received to the vault
+It is important that `merge` is run last as it will merge the list of beneficiaries that had not claimed ETH in the current version of the tree with the new beneficiaries that are able to claim the new ETH received to the vault
+
+Update `start` and `from` blocks to be the last time the tree was update upto the most recent deposit of ETH.
 
 you can finally push to ipfs by running
 

@@ -1,0 +1,77 @@
+[
+  {
+    "blockNumber": 14040539,
+    "transactionHash": "0xdb2eb52d830e29c368064630b0ae93053bf0b28c8e6558977a530568e47a1a7b",
+    "amount": "12571600000000000000"
+  },
+  {
+    "blockNumber": 14116416,
+    "transactionHash": "0xd0f3715d2bede67a4883e5bdffd1e3dcf946da39d232a1e604e998976cb47a1a",
+    "amount": "9135435000000000000"
+  },
+  {
+    "blockNumber": 14154534,
+    "transactionHash": "0xd9d32534c0ed911e67ea85e61f3a8260d72f33ebed744f2eb6d68e36d13d9b53",
+    "amount": "1915362500000000000"
+  },
+  {
+    "blockNumber": 14155444,
+    "transactionHash": "0x9fc9e098b3efd08d6e9765e011ab816a4d213ab20a4be00de6fa3bfa5030f245",
+    "amount": "37500000000000000"
+  },
+  {
+    "blockNumber": 14187283,
+    "transactionHash": "0x65501830c1e3d51e9adcd7d7bdb543d6a79ba7bf8c6a1106f8583fa0be083508",
+    "amount": "833375000000000000"
+  },
+  {
+    "blockNumber": 14225170,
+    "transactionHash": "0x3d0a512d502b21e67e22fe03cf892fe8aaa37e9253f30207b4811d37b23b397e",
+    "amount": "2088337500000000000"
+  },
+  {
+    "blockNumber": 14260926,
+    "transactionHash": "0xd0db826c60197da5be0a4cc18be8029acd05854cc8befc6ad10c676ac9c876c3",
+    "amount": "325250000000000000"
+  },
+  {
+    "blockNumber": 14313908,
+    "transactionHash": "0x7edf81ba843df42ab7d38580f79ff702050c261537d46f0c5fd26d626d0aaaba",
+    "amount": "414250000000000000"
+  },
+  {
+    "blockNumber": 14331325,
+    "transactionHash": "0x020a5dbd37a82f8fe3272bad59e29e8f21c4fff85e635a539845af3a85a9bc2c",
+    "amount": "771874999999999988"
+  },
+  {
+    "blockNumber": 14337716,
+    "transactionHash": "0x1ac4c7413cbcba7a1173ab49343d6deb687ba239bb19c96696206c6cbda7f7fa",
+    "amount": "137500000000000000"
+  },
+  {
+    "blockNumber": 14378729,
+    "transactionHash": "0x9d3c361dae57ed2e504e62a4a84520867dc82db20a14cf9a5996341d32f7afed",
+    "amount": "2536750000000000000"
+  },
+  {
+    "blockNumber": 14416843,
+    "transactionHash": "0xca6024c45efd5031e19cc3b5bd56becc42b3ba495647c45a0280cf63ed572e41",
+    "amount": "2177125000000000000"
+  },
+  {
+    "blockNumber": 14486830,
+    "transactionHash": "0xa96568b27ee0de71c45e33938cf72080f3a4ebf4ed53ef2d3b54d2ac0dfbef2f",
+    "amount": "434375000000000000"
+  },
+  {
+    "blockNumber": 14516796,
+    "transactionHash": "0xff4423cdb2edb38b17410ed8979a72bf1714ca18bc83c7ee8d3ccdf5e5dfdfb7",
+    "amount": "34387500000000000"
+  },
+  {
+    "blockNumber": 14560763,
+    "transactionHash": "0x7236f4a08d3831617a74298b6bf7622fa092f5c7c5a66414a5de4a695b33880c",
+    "amount": "40000000000000000"
+  }
+]

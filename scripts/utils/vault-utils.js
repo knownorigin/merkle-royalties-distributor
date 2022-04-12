@@ -29,5 +29,20 @@ module.exports = {
     const {claims} = data;
 
     return {claims, currentMerkleVersion, vault};
+  },
+
+  loadVaultInstance: (network, vaultAddress) => {
+    const provider = new ethers.providers.InfuraProvider(network, {
+      projectSecret: process.env.INFURA_PROJECT_SECRET,
+      projectId: process.env.INFURA_PROJECT_ID,
+    });
+
+    const vault = new ethers.Contract(
+      vaultAddress,
+      vaultABI,
+      provider
+    );
+
+    return {vault, provider}
   }
 };

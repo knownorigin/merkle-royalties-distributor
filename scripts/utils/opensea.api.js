@@ -2,6 +2,7 @@ const moment = require('moment');
 const fs = require('fs');
 const _ = require('lodash');
 const axios = require('axios');
+const {sleep} = require('./utils');
 
 const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 
@@ -40,6 +41,8 @@ async function getEventsForContract(version, startDate, endDate, eventType = 'su
     });
 
     events = _.concat(events, data.asset_events);
+
+    await sleep();
 
     // add one day
     currentUnix += oneDayInSeconds;
@@ -81,6 +84,7 @@ const filterAndMapOpenSeaEthData = (platformCommission, events) => {
     const isIncluded =
       (event.payment_token.symbol === 'ETH' || event.payment_token.symbol === 'WETH')
       && !is_private // ensure not OTC
+      && event.total_price !== '0' // ensure not a zero priced sale
       && event.asset // ensure an asset
       && event.asset.token_id // ensure asset has a token ID
       && event.dev_seller_fee_basis_points; // ensure the dev fee set when item was listed is present
@@ -91,6 +95,10 @@ const filterAndMapOpenSeaEthData = (platformCommission, events) => {
 
     if (is_private) {
       console.log(`Found private sale - token ID [${_.get(event, 'asset.token_id', 'N/A')}] ID [${event.transaction.id}] TX [${event.transaction.transaction_hash}]`);
+    }
+    
+    if(event.total_price === '0'){
+      console.log(`Found ZERO priced sale - token ID [${_.get(event, 'asset.token_id', 'N/A')}] ID [${event.transaction.id}] TX [${event.transaction.transaction_hash}]`);
     }
 
     return isIncluded;
