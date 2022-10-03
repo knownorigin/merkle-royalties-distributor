@@ -81,7 +81,8 @@ But do check through these scripts. They are configured with example parameters 
 KnownOrigin:
 
 Mainnet: 0x11B0D9AFD49Dc36D86DEa579d0D11771a4f2f54b
-Rinkeby: 0x67b72140269cfc18516cace5fcf4237706657de0
+Goerli: 0xc57a241949696926BECfee8C305CeF8E57217B86
+Rinkeby (DEPRECATED): 0x67b72140269cfc18516cace5fcf4237706657de0
 ```
 
 For information on the first version of the merkle tree deployed to the KnownOrigin vault, please read [here](./data/os_export/README.md)
