@@ -13,7 +13,7 @@ require('./scripts/tasks/get-eth-deposits');
 require('./scripts/tasks/master-reconcile');
 
 const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
-const PRIVATE_KEY = process.env.OS_VAULT_PRIVATE_KEY;
+const PRIVATE_KEY = process.env.KO_TESTNET_DEPLOYER_PRIVATE_KEY || process.env.OS_VAULT_PRIVATE_KEY;
 
 module.exports = {
   solidity: {
@@ -37,6 +37,12 @@ module.exports = {
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: [`${PRIVATE_KEY}`],
+      maxFeePerGas: 245000000000,
+      maxPriorityFeePerGas: 1900000000
+    },
+    goerli: {
+      url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: [`${PRIVATE_KEY}`],
       maxFeePerGas: 245000000000,
       maxPriorityFeePerGas: 1900000000
