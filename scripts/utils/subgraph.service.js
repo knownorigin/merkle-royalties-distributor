@@ -22,7 +22,7 @@ const getTokenData = async (token_id) => {
   `;
 
   return await request(
-    'https://api.thegraph.com/subgraphs/name/knownorigin/known-origin',
+    'https://graph.knownorigin.io/mainnet',
     koLookupQuery,
     {
       id: token_id
